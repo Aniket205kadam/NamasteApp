@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Streamify - Email Verification</title>
+    <style>
+        body, p, div, a {
+          margin: 0;
+          padding: 0;
+          font-family: Arial, sans-serif;
+        }
+        body {
+          background-color: #f4f4f4;
+          padding: 20px;
+        }
+        .email-container {
+          max-width: 600px;
+          margin: 20px auto;
+          background-color: #ffffff;
+          border: 1px solid #dddddd;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+          background-color: #0073e6;
+          color: #ffffff;
+          text-align: center;
+          padding: 20px;
+        }
+        .email-header h1 {
+          font-size: 24px;
+          margin: 0;
+        }
+        .email-body {
+          padding: 30px 20px;
+          color: #333333;
+          line-height: 1.6;
+          font-size: 16px;
+        }
+        .email-body p {
+          margin-bottom: 20px;
+        }
+        .verification-code {
+          text-align: center;
+          font-size: 28px;
+          font-weight: bold;
+          background-color: #f0f0f0;
+          padding: 15px;
+          border-radius: 5px;
+          letter-spacing: 2px;
+          color: #000000;
+          margin-bottom: 20px;
+        }
+        /* Verify button styling */
+        .verify-button {
+          display: block;
+          width: 220px;
+          margin: 0 auto 20px auto;
+          padding: 12px 0;
+          text-align: center;
+          background-color: #28a745;
+          color: #ffffff;
+          text-decoration: none;
+          font-size: 16px;
+          font-weight: bold;
+          border-radius: 5px;
+          transition: background-color 0.3s ease;
+        }
+        .verify-button:hover {
+          background-color: #218838;
+        }
+        .email-footer {
+          background-color: #f9f9f9;
+          text-align: center;
+          padding: 15px;
+          font-size: 12px;
+          color: #777777;
+          border-top: 1px solid #dddddd;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="email-header">
+        <h1>Streamify - Email Verification</h1>
+    </div>
+    <div class="email-body">
+        <p>Hello,</p>
+        <p>
+            Someone tried to sign up for an Instagram account with
+            <span th:text="${email}"></span>.
+            If it's not you, please enter the following confirmation code in the app:
+        </p>
+        <div class="verification-code">
+            <span th:text="${verificationCode}"></span>
+        </div>
+        <p>
+            Alternatively, if you wish to verify your account directly, please click the button below:
+        </p>
+        <a class="verify-button" th:href="${verificationUrl}">Verify Your Account</a>
+    </div>
+    <div class="email-footer">
+        &copy; 2025 Streamify. All Rights Reserved.
+    </div>
+</div>
+</body>
+</html>
