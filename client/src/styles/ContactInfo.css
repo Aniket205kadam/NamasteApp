@@ -1,0 +1,154 @@
+.contact-info {
+    width: 100%;
+    /* max-width: 400px; */
+    background: #fff;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  /* Header Styles */
+  .contact-info__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #e9edef;
+  }
+  
+  .contact-info__close-btn,
+  .contact-info__edit-btn {
+    color: #008069;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  
+  .contact-info__title {
+    font-size: 18px;
+    color: #111b21;
+    margin: 0;
+  }
+  
+  /* Profile Section */
+  .contact-info__profile {
+    text-align: center;
+    padding: 24px 16px;
+  }
+  
+  .contact-info__avatar-wrapper {
+    position: relative;
+    margin: 0 auto 16px;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .contact-info__avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  /* .contact-info__status {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  } */
+  
+  .contact-info__status.online {
+    background: #00a884;
+  }
+  
+  .contact-info__name {
+    font-size: 24px;
+    color: #111b21;
+    margin: 0 0 8px;
+  }
+  
+  .contact-info__email {
+    color: #667781;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  /* Section Styles */
+  .contact-info__section {
+    padding: 16px;
+    border-top: 1px solid #e9edef;
+  }
+  
+  .contact-info__section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .contact-info__section-title {
+    font-size: 16px;
+    color: #667781;
+    margin: 0;
+  }
+  
+  /* Media Section */
+  .contact-info__media-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .contact-info__media-thumbnail {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .contact-info__media-count {
+    background: none;
+    border: none;
+    color: #008069;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Actions Section */
+  .contact-info__actions {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .contact-info__action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: none;
+    text-align: left;
+    color: #111b21;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  
+  .contact-info__action-btn:hover {
+    background: #f5f6f6;
+  }
+  
+  .contact-info__action-btn--delete {
+    color: #d33946;
+  }
+  
+  .contact-info__action-btn--favourite {
+    color: #e86964;
+  }

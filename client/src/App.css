@@ -1,0 +1,63 @@
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #0b141a;
+    overflow: hidden;
+  }
+  
+  .left-bar-section,
+  .chat-previews-section,
+  .chat-window-section,
+  .contact-info-page {
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .left-bar-section {
+    width: 72px;
+    background-color: #c1c9cf;
+    border-right: 1px solid #edf2f4;
+    padding: 12px 0;
+    flex-shrink: 0;
+  }
+  
+  .chat-previews-section {
+    width: 400px;
+    background-color: #111b21;
+    border-right: 1px solid #c1c9cf;
+    flex-shrink: 0;
+  }
+  
+  .chat-window-section {
+    flex: 1;
+    background-color: #0b141a;
+    min-width: 400px;
+  }
+  
+  .contact-info-page {
+    width: 400px;
+    background-color: #111b21;
+    border-left: 1px solid #374045;
+    flex-shrink: 0;
+  }
+  
+  .chat-previews-section > *,
+  .chat-window-section > *,
+  .contact-info-page > *,
+  .left-bar-section > * {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  
+  .chat-header {
+    flex-shrink: 0;
+    background-color: #1f2c33;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #374045;
+  }
