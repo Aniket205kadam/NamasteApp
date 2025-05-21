@@ -18,5 +18,11 @@ public class MessageResponse {
     private String senderId;
     private String receiverId;
     private LocalDateTime createdAt;
-    private byte[] media;
+    private String media;
+    private String caption;
+    private String gifUrl;
+    private String fileOriginalName;
+    private String replyId;
+    private boolean isDeleted;
+    private boolean isDeletedFromReceiver;
 }

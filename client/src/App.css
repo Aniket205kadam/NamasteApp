@@ -38,6 +38,7 @@
   }
   
   .contact-info-page {
+    flex: 1;
     width: 400px;
     background-color: #111b21;
     border-left: 1px solid #374045;
@@ -60,4 +61,14 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid #374045;
+  }
+
+  .GIF {
+    position: absolute;
+    left: 45%;
+    bottom: 45%;
+    border-radius: 50%;
+    background-color: #00000080;
+    padding: 5px;
+    color: #ffffff;
   }

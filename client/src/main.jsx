@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         element: <EmailVerification />,
       },
       {
-        path: "/success-asuwecwoew12@1slks",
+        path: "/success-asuwecwoew12@1slks/:email",
         element: <AccountVerified />
       }
     ],

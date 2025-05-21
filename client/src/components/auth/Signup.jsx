@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Logo from "../../assets/NamasteApp.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,32 +8,59 @@ import authService from "../../service/AuthService";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
+import Loader from "../animation/Loader";
 
 function Signup() {
   const { register, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({ input: "", desc: "" });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const signupHandler = async (data) => {
-    // const authResponse = await authService.signup(data);
-    // if (!authResponse.success) {
-    //   toast.error(authResponse.error || "Failed to signup, try again!");
-    //   return;
-    // }
+    setLoading(true);
+    const authResponse = await authService.signup(data);
+    if (!authResponse.success) {
+      if (authResponse.error.validationError) {
+        if (
+          authResponse.error.validationError[0]
+            .toLowerCase()
+            .includes("password")
+        ) {
+          // focus on the password field
+          document.getElementById("password_field").focus();
+          setError({
+            input: "PASSWORD",
+            desc: authResponse.error.validationError[0],
+          });
+        }
+      } else if (
+        authResponse.error.message.toLowerCase().includes("duplicate") &&
+        authResponse.error.message.toLowerCase().includes("email")
+      ) {
+        document.getElementById("email_field").focus();
+        setError({
+          input: "EMAIL",
+          desc: "This email is already in use. Try logging in or use another email.",
+        });
+      }
+    }
     //TODO: create popup to display this message
-    // dispatch(
-    //   login({
-    //     id: "",
-    //     fullName: "",
-    //     email: "",
-    //     isAuthenticated: false,
-    //     authToken: "",
-    //     avtar: "",
-    //   })
-    // );
-    toast.success(
-      "Successfully create the account now time to verified the email address"
+    dispatch(
+      login({
+        id: authResponse.response,
+        fullName: data.firstname + " " + data.lastname,
+        email: data.email,
+        isAuthenticated: false,
+        authToken: "",
+        avtar:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACUCAMAAAA02EJtAAAAMFBMVEXk5ueutLfp6+ymrbCqsLTIzM6xt7rQ09Xc3+DU19nh4+TZ3N3Lz9HFycvBxsi3vL+knNE6AAADvElEQVR4nO2b2RKkIAwABZFT4f//doc5dufSCQQTraUffO5CIIGEYeh0Op1Op9PpdDqdTuf/QXILwPDOGWNc8IcWtiYmNY6jUtdvWpw9oq/0c9JKiWeU0nH2B5OVPoo1Fm65F+wyrpoKJSZ7lJGVk1brpllWm2O42rTpeSN6bs3LkBqAaJ4Fgd10BplmDLPqBDYVamadsMv2enplnPlE5VRiyjkHCubpA8ek6opNhWDas3SFauIQletRf4uJQbXm92foQ4GHhNNvRHJVU7hP/WUkH9ZKUUG+smT1oAryzbVmo3pAOltl7fK/QTpb6/bUO4oybQEl/utQLiyHWFR5WAkzgdLk712V8FSYcKoi0qkiTYUmU7UbFxQwLJUqJlTdoApYxUeqT6jWVWVS/cx0HtWFShUXqzJUu9WZVDEZ4F2VxvRUo3oi1YjeV8k2q/OEgBMF1iGcJ11BJ4GCMLVGmiY6VeyBhbAqgDwGjnRTdbC40KrpTLFXFpTXwcAS4Bq015YYU9pbSzljLi2Jq4L1pqSLKlO9tY7kJcHqsgVhpHpQuwkw9AVUngV4mm5qTFkKl3X1QMLo/0JR40JG8TUElJ4HGdsshiJX0jQF5aoIr9W/Ap+vvA1BQ74UAJpyta08EwBHApXYm9eu/LwaVmQXPz+RIW5dYqgYjmKaCWtVN6USV4RaQ9qYxLuuEmk5WgNzRno3J31tClfXxnAd53BE0TveBzNNyzSb4P0B2ms3kM9wy3wnm3kbnDHzdGXOzxiCHY6lLAfr5pj0l1CgtY75IQM/cvDWLPmFxUYmkFdYuqwwxpcXUuaHIO8vLFaFhY5T4LH1U811YCTOBeQQZr31zzcGdxTRkT2+kN58xqUS20sII5Jd8CXWyyF7/4kQlrof/8GY3J7B7JKSYP78O2m/g8HGm6pa2X0SWW+AO2gJY2wfyWTAV9a/oXTzs0zBs5pSmp4S5OpxpAkN+1mRpR+Aa7NWlmVn0zxjm0wCv+vPf9DitYAlMRUNekQgtzxtwFbebctA+gPce7zw4y1tYxDjiiz7F4MoFdCOaXatrBQ3aFIrpnJ/3THsr5Nq8m1kK00lNbWNBk2qda7F2XaDfupKdOkUCFym5bXtfXJ+GGW7AM+aulO0srjW1I2SPjzp0A2qKAqGtUHfNw54ns24/G+Aq/Fy/8PUD8DhtbqFqhkKepvF/v/h/Rj4Xno00B4ntvD/DwVUZd3/b0CvBfj/P/SkjX9L0QBYwDrAqgK2jsplPAAKlgbIAwAS7XQ6SP4AIaQzO0GvG4MAAAAASUVORK5CYII=",
+      })
     );
+    toast.success(
+      "Account created successfully! Now, please verify your email address to complete the registration."
+    );
+    setLoading(false);
     navigate(`/email-verification/${data.email}`);
   };
 
@@ -134,7 +161,7 @@ function Signup() {
           <input
             placeholder="name@mail.com"
             type="email"
-            className="input_field"
+            className={`input_field ${error.input === "EMAIL" ? "error" : ""}`}
             id="email_field"
             {...register("email", {
               required: true,
@@ -144,8 +171,19 @@ function Signup() {
                   "Email address must be a valid address",
               },
             })}
+            onChange={() => {
+              if (error.input === "EMAIL") {
+                setError({ input: "", desc: "" });
+              }
+            }}
           />
         </div>
+        {error.input === "EMAIL" ? (
+          <div className="error-msg" style={{ textAlign: "left" }}>
+            *{error.desc}
+          </div>
+        ) : null}
+
         <div className="input_container">
           <label className="input_label" htmlFor="password_field">
             Password
@@ -179,13 +217,25 @@ function Signup() {
           <input
             placeholder="Password"
             type="password"
-            className="input_field"
+            className={`input_field ${
+              error.input === "PASSWORD" ? "error" : ""
+            }`}
             id="password_field"
             {...register("password", { required: true })}
+            onChange={() => {
+              if (error.input === "PASSWORD") {
+                setError({ input: "", desc: "" });
+              }
+            }}
           />
         </div>
+        {error.input === "PASSWORD" ? (
+          <p className="error-msg" style={{ textAlign: "right" }}>
+            *{error.desc}
+          </p>
+        ) : null}
         <button title="Sign Up" type="submit" className="sign-in_btn">
-          <span>Sign Up</span>
+          {loading ? <Loader /> : <span>Sign Up</span>}
         </button>
         <div className="separator">
           <hr className="line" />

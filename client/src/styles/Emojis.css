@@ -1,0 +1,150 @@
+/* Updated CSS */
+.emojis-container {
+  position: absolute;
+  bottom: 60px;
+  left: 520px;
+  width: 340px;
+  height: 360px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e9edef;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  padding: 0 16px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.options {
+  display: flex;
+  gap: 24px;
+}
+
+.option {
+  padding: 12px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #667781;
+  position: relative;
+  font-weight: 500;
+}
+
+.option.active {
+  color: #008069;
+}
+
+.option.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #008069;
+}
+
+.main {
+  flex: 1;
+  overflow: hidden;
+  background: #f5f6f7;
+}
+
+/* GIF Component Styles */
+.gif-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-container1 {
+  padding: 8px 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 8px 28px;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #3b4a54;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #667781;
+  font-size: 14px;
+}
+
+.gif-grid {
+  /* flex: 1; */
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.gif-item {
+  /* width: 20px; */
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  /* overflow: hidden; */
+  aspect-ratio: 1;
+  transition: transform 0.1s ease;
+}
+
+.gif-item:hover {
+  transform: scale(0.98);
+}
+
+.gif-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e3e3e3;
+  border-radius: 50%;
+  border-top-color: #008069;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.epr-dark-theme {
+  background-color: #ffffff !important;
+}
+
+.epr-search-container input {
+  background-color: #f0f2f5 !important;
+  border-color: #e9edef !important;
+}

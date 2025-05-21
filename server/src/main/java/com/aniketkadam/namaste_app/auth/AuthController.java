@@ -17,11 +17,12 @@ public class AuthController {
     private final AuthService service;
 
     @PostMapping("/signup")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void register(
+    public ResponseEntity<String> register(
             @RequestBody @Valid RegistrationRequest request
     ) throws MessagingException {
-        service.register(request);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(service.register(request));
     }
 
     @PatchMapping("/verification/{email}/{verification-code}")
@@ -29,7 +30,7 @@ public class AuthController {
     public void emailVerification(
             @PathVariable("email") String email,
             @PathVariable("verification-code") String otp
-    ) throws OperationNotPermittedException, MessagingException {
+    ) throws Exception {
         service.emailVerification(otp, email);
     }
 
@@ -40,5 +41,13 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.login(request));
+    }
+
+    @GetMapping("/resend/{email}/otp")
+    @ResponseStatus(HttpStatus.OK)
+    public void resendOtp(
+            @PathVariable("email") String email
+    ) throws MessagingException {
+        service.sendOtp(email);
     }
 }

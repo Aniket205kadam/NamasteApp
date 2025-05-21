@@ -16,4 +16,6 @@ public class MessageRequest {
     private String receiverId;
     private MessageType type;
     private String chatId;
+    private String gifUrl;
+    private String replyId;
 }

@@ -1,5 +1,6 @@
 package com.aniketkadam.namaste_app.message;
 
+import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,21 +22,25 @@ public class MessageController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveMessage(
+    public ResponseEntity<MessageResponse> saveMessage(
             @RequestBody MessageRequest request
     ) {
-        messageService.saveMessage(request);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(messageService.saveMessage(request));
     }
 
     @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void uploadMedia(
+    public ResponseEntity<MessageResponse> uploadMedia(
             @RequestParam("chat-id") String chatId,
+            @RequestParam("caption") String caption,
             @Parameter()
             @RequestPart("file") MultipartFile file,
             Authentication connectedUser
     ) {
-        messageService.uploadMediaMessage(chatId, file, connectedUser);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(messageService.uploadMediaMessage(chatId, caption, file, connectedUser));
     }
 
     @PatchMapping
@@ -53,5 +59,34 @@ public class MessageController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(messageService.findChatMessages(chatId));
+    }
+    
+    @GetMapping("/m/{message-id}")
+    public ResponseEntity<MessageResponse> getMessageById(
+            @PathVariable("message-id") Long messageId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(messageService.findMessageById(messageId));
+    }
+
+    @DeleteMapping("/c/{chat-id}/d/{message-id}")
+    public ResponseEntity<MessageResponse> deleteMessage(
+            @PathVariable("chat-id") String chatId,
+            @PathVariable("message-id") Long messageId,
+            Authentication connectedUser
+    ) throws OperationNotPermittedException, IOException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(messageService.deleteMessage(chatId, messageId, connectedUser));
+    }
+
+    @GetMapping("/u/get/unread/msg")
+    public ResponseEntity<Integer> getTotalUnreadMessages(
+            Authentication connectedUser
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(messageService.getTotalUnreadMessages(connectedUser));
     }
 }

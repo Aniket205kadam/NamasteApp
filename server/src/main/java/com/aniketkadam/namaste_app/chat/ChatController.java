@@ -40,4 +40,14 @@ public class ChatController {
                 .status(HttpStatus.OK)
                 .body(service.getChatsByUser(connectedUser));
     }
+
+    @GetMapping("/c/{chat-id}")
+    public ResponseEntity<ChatResponse> getChatById(
+            @PathVariable("chat-id") String chatId,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getChatById(chatId, connectedUser));
+    }
 }

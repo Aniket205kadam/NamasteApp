@@ -66,6 +66,14 @@ public class Chat extends BaseAuditingEntity {
     }
 
     @Transient
+    public User getTargetUser(String senderId) {
+        if (recipient.getId().equals(senderId)) {
+            return sender;
+        }
+        return recipient;
+    }
+
+    @Transient
     public String getTargetChatName(String senderId) {
         if (sender.getId().equals(senderId)) {
             return sender.getFirstname() + " " + sender.getLastname();
@@ -77,7 +85,7 @@ public class Chat extends BaseAuditingEntity {
     public long getUnreadMessages(String senderId) {
         return messages.stream()
                 .filter(m -> m.getReceiverId().equals(senderId))
-                .filter(m -> m.getState() != MessageState.SEEN)
+                .filter(m -> m.getState() == MessageState.SENT || m.getState() == MessageState.RECEIVED)
                 .count();
     }
 
@@ -86,6 +94,8 @@ public class Chat extends BaseAuditingEntity {
         if (messages != null && !messages.isEmpty()) {
             if (messages.getFirst().getType() != MessageType.TEXT) {
                 return "Attachment:" + messages.getFirst().getType();
+            } else {
+                return messages.getFirst().getContent();
             }
         }
         return null; // no messages available

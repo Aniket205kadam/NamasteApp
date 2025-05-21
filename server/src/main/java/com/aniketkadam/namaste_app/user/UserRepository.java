@@ -16,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(name = UserConstants.FIND_ALL_USERS_EXCEPT_SELF)
     List<User> findAllUsersExceptSelf(@Param("userId") String userId);
+
+    @Query(name = UserConstants.SEARCH_USER_BY_NAME_OR_EMAIL)
+    List<User> searchUsers(@Param("query") String query);
 }

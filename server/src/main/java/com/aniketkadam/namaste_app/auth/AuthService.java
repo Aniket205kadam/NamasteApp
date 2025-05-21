@@ -11,7 +11,9 @@ import com.aniketkadam.namaste_app.user.VerificationCode;
 import com.aniketkadam.namaste_app.user.VerificationCodeRepository;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,15 +36,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public void register(RegistrationRequest request) throws MessagingException {
+    @Transactional
+    public String register(RegistrationRequest request) throws MessagingException {
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .about("Hey there! I am using NamasteApp")
                 .build();
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         sendValidationToken(user);
+        return savedUser.getId();
     }
 
     private void sendValidationToken(User user) throws MessagingException {
@@ -113,8 +118,14 @@ public class AuthService {
         String jwtToken = jwtService.generateJwtToken(claims, user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .createAt(LocalDateTime.now())
-                .expiredAt(null) // todo -> also set the expired time
+                .fullName(user.getName())
+                .id(user.getId())
                 .build();
+    }
+
+    public void sendOtp(@NonNull String email) throws MessagingException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User with email: " + email + " not found"));
+        sendValidationToken(user);
     }
 }

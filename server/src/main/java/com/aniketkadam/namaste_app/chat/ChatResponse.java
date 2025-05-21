@@ -13,6 +13,7 @@ public class ChatResponse {
 
     private String id;
     private String name;
+    private String avtar;
     private long unreadCount;
     private String lastMessage;
     private LocalDateTime lastMessageTime;

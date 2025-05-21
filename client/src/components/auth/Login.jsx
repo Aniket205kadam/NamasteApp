@@ -1,15 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../../assets/NamasteApp.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import Loader from "../animation/Loader";
+import authService from "../../service/AuthService";
+import { login } from "../../store/authSlice";
 
 function Login() {
+  const { register, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const loginHandler = async (data) => {
+    setError(null);
+    setLoading(true);
+    const loginResponse = await authService.login(data);
+    if (!loginResponse.success) {
+      setError(loginResponse.error.businessErrorDescription);
+      return;
+    }
+    dispatch(
+      login({
+        id: loginResponse.response.id,
+        fullName: loginResponse.response.fullName,
+        email: data.email,
+        isAuthenticated: true,
+        authToken: loginResponse.response.token,
+        avtar:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKoAAACUCAMAAAA02EJtAAAAMFBMVEXk5ueutLfp6+ymrbCqsLTIzM6xt7rQ09Xc3+DU19nh4+TZ3N3Lz9HFycvBxsi3vL+knNE6AAADvElEQVR4nO2b2RKkIAwABZFT4f//doc5dufSCQQTraUffO5CIIGEYeh0Op1Op9PpdDqdTuf/QXILwPDOGWNc8IcWtiYmNY6jUtdvWpw9oq/0c9JKiWeU0nH2B5OVPoo1Fm65F+wyrpoKJSZ7lJGVk1brpllWm2O42rTpeSN6bs3LkBqAaJ4Fgd10BplmDLPqBDYVamadsMv2enplnPlE5VRiyjkHCubpA8ek6opNhWDas3SFauIQletRf4uJQbXm92foQ4GHhNNvRHJVU7hP/WUkH9ZKUUG+smT1oAryzbVmo3pAOltl7fK/QTpb6/bUO4oybQEl/utQLiyHWFR5WAkzgdLk712V8FSYcKoi0qkiTYUmU7UbFxQwLJUqJlTdoApYxUeqT6jWVWVS/cx0HtWFShUXqzJUu9WZVDEZ4F2VxvRUo3oi1YjeV8k2q/OEgBMF1iGcJ11BJ4GCMLVGmiY6VeyBhbAqgDwGjnRTdbC40KrpTLFXFpTXwcAS4Bq015YYU9pbSzljLi2Jq4L1pqSLKlO9tY7kJcHqsgVhpHpQuwkw9AVUngV4mm5qTFkKl3X1QMLo/0JR40JG8TUElJ4HGdsshiJX0jQF5aoIr9W/Ap+vvA1BQ74UAJpyta08EwBHApXYm9eu/LwaVmQXPz+RIW5dYqgYjmKaCWtVN6USV4RaQ9qYxLuuEmk5WgNzRno3J31tClfXxnAd53BE0TveBzNNyzSb4P0B2ms3kM9wy3wnm3kbnDHzdGXOzxiCHY6lLAfr5pj0l1CgtY75IQM/cvDWLPmFxUYmkFdYuqwwxpcXUuaHIO8vLFaFhY5T4LH1U811YCTOBeQQZr31zzcGdxTRkT2+kN58xqUS20sII5Jd8CXWyyF7/4kQlrof/8GY3J7B7JKSYP78O2m/g8HGm6pa2X0SWW+AO2gJY2wfyWTAV9a/oXTzs0zBs5pSmp4S5OpxpAkN+1mRpR+Aa7NWlmVn0zxjm0wCv+vPf9DitYAlMRUNekQgtzxtwFbebctA+gPce7zw4y1tYxDjiiz7F4MoFdCOaXatrBQ3aFIrpnJ/3THsr5Nq8m1kK00lNbWNBk2qda7F2XaDfupKdOkUCFym5bXtfXJ+GGW7AM+aulO0srjW1I2SPjzp0A2qKAqGtUHfNw54ns24/G+Aq/Fy/8PUD8DhtbqFqhkKepvF/v/h/Rj4Xno00B4ntvD/DwVUZd3/b0CvBfj/P/SkjX9L0QBYwDrAqgK2jsplPAAKlgbIAwAS7XQ6SP4AIaQzO0GvG4MAAAAASUVORK5CYII=",
+        //TODO: implement later
+      })
+    );
+    setLoading(false);
+  };
 
   return (
     <div className="page-container">
-      <form className="form_container">
+      <form className="form_container" onSubmit={handleSubmit(loginHandler)}>
         <div className="logo_container">
           <img src={Logo} alt="NamasteApp" className="logo" />
         </div>
@@ -21,6 +53,9 @@ function Login() {
           </span>
         </div>
         <br />
+        {error && (
+          <span style={{ fontSize: "14px", color: "red" }}>{error}</span>
+        )}
         <div className="input_container">
           <label className="input_label" htmlFor="email_field">
             Email
@@ -54,6 +89,14 @@ function Login() {
             type="text"
             className="input_field"
             id="email_field"
+            {...register("email", {
+              required: true,
+              validate: {
+                matchPattern: (value) =>
+                  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                  "Email address must be a valid address",
+              },
+            })}
           />
         </div>
         <div className="input_container">
@@ -93,10 +136,11 @@ function Login() {
             type="password"
             className="input_field"
             id="password_field"
+            {...register("password", { required: true })}
           />
         </div>
         <button title="Sign In" type="submit" className="sign-in_btn">
-          <span>Sign In</span>
+          {loading ? <Loader /> : <span>Sign In</span>}
         </button>
 
         <div className="separator">
@@ -113,14 +157,18 @@ function Login() {
           <span>Sign In with Github</span>
         </button>
         <div className="login-redirect">
-            <p>Don't have an account? </p>
-            <button type="button" className="login-link" onClick={() => navigate("/signup")}>
-              Signup here
-            </button>
-          </div>
+          <p>Don't have an account? </p>
+          <button
+            type="button"
+            className="login-link"
+            onClick={() => navigate("/signup")}
+          >
+            Signup here
+          </button>
+        </div>
         <p className="note">Terms of use &amp; Conditions</p>
       </form>
-     </div>
+    </div>
   );
 }
 

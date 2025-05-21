@@ -3,17 +3,15 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children, authentication }) {
-  const { isAuthentication } = useSelector((state) => state.authentication);
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(isAuthentication);
-
-
+  const { isAuthenticated } = useSelector((state) => state.authentication);
+  
   // Redirect to login if authentication is required but user is not authenticated
-  if (authentication && !isUserAuthenticated) {
+  if (authentication && !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   // Redirect to home if user is authenticated but tries to access login/register pages
-  if (!authentication && isUserAuthenticated) {
+  if (!authentication && isAuthenticated) {
     return <Navigate to="/c" replace />;
   }
 

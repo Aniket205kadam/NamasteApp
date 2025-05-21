@@ -1,26 +1,28 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import NoProfile from "../../assets/no-profile.png";
+import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
 
-function Chat({ chat }) {
+function Chat({ chat, setCurrentChat }) {
   return (
-    <div className="chat" key={chat.id}>
+    <div className="chat" key={chat.id} onClick={() => setCurrentChat(chat.id)}>
       <div className="profile">
-        <img src={chat.avtar} alt={chat.name} />
+        <img src={chat.avtar || NoProfile} alt={chat.name} />
       </div>
       <div className="info">
         <div className="name">
           <span>{chat.name}</span>
         </div>
         <div className="last-msg-time">
-          <span>{chat.lastMsgTime}</span>
+          <span>{useNotificationTimeConvertor(chat.lastMessageTime)}</span>
         </div>
         <div className="last-msg">
-          <span>{chat.lastMsg}</span>
+          <span>{chat.lastMessage}</span>
         </div>
-        {chat.unread > 0 && (
+        {chat.unreadCount > 0 && (
           <div className="unread-msg">
-            <span>{chat.unread}</span>
+            <span>{chat.unreadCount}</span>
           </div>
         )}
         <div className="chat-actions">

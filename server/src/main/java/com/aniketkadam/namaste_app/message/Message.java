@@ -18,11 +18,18 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "messages")
 @NamedQuery(
         name = MessageConstants.FIND_MESSAGES_BY_CHAT_ID,
-        query = "SELECT message FROM Message message WHERE message.chat.id = :chatId ORDER BY message.createdDate"
+        query = """
+                SELECT message FROM Message message
+                WHERE message.chat.id = :chatId ORDER BY message.createdDate
+                """
 )
 @NamedQuery(
         name = MessageConstants.SET_MESSAGES_TO_SEEN_BY_CHAT,
-        query = "UPDATE Message SET state = :newState where chat.id = :chatId"
+        query = "UPDATE Message SET state = :newState where chat.id = :chatId AND receiverId = :receiverId"
+)
+@NamedQuery(
+        name = MessageConstants.FIND_TOTAL_UNREAD_MESSAGES,
+        query = "SELECT message FROM Message message WHERE message.receiverId = :userId AND message.state = :state"
 )
 public class Message extends BaseAuditingEntity {
 
@@ -44,4 +51,14 @@ public class Message extends BaseAuditingEntity {
     @Column(name = "receiver_id", nullable = false)
     private String receiverId;
     private String mediaFilePath;
+    @Column(columnDefinition = "TEXT")
+    private String caption;
+    @Column(columnDefinition = "TEXT")
+    private String gifUrl;
+    @Column(columnDefinition = "TEXT")
+    private String fileOriginalName;
+    private String replyId;
+
+    private Boolean isDeleted;
+    private Boolean isDeletedFromReceiver;
 }

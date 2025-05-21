@@ -28,6 +28,16 @@ import java.util.List;
         name = UserConstants.FIND_ALL_USERS_EXCEPT_SELF,
         query = "SELECT user FROM User user WHERE user.id != :userId"
 )
+@NamedQuery(
+        name = UserConstants.SEARCH_USER_BY_NAME_OR_EMAIL,
+        query = """
+                SELECT user
+                FROM User user
+                WHERE LOWER(user.firstname) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(user.lastname) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(user.email) LIKE LOWER(CONCAT('%', :query, '%'))
+                """
+)
 public class User extends BaseAuditingEntity implements UserDetails, Principal {
 
     private static final int LAST_ACTIVATE_INTERVAL = 5;
@@ -37,8 +47,13 @@ public class User extends BaseAuditingEntity implements UserDetails, Principal {
     private String id;
     private String firstname;
     private String lastname;
+    @Column(name = "email", unique = true)
     private String email;
     private String password;
+    @Column(columnDefinition = "TEXT")
+    private String about;
+    @Column(columnDefinition = "TEXT")
+    private String avtar;
     private LocalDateTime lastSeen;
     private boolean isVerified;
 

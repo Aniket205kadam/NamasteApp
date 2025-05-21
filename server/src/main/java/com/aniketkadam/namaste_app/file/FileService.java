@@ -19,12 +19,41 @@ public class FileService {
     @Value("${application.file.uploads.media-output-path}")
     private String fileUploadPath;
 
+    @Value("${application.file.uploads.avtar-output-path}")
+    private String avtarUploadPath;
+
     public String saveFile(
             @NonNull MultipartFile sourceFile,
             @NonNull String userId
     ) {
         final String fileUploadSubPath = "users" + File.separator + userId;
         return uploadFile(sourceFile, fileUploadSubPath);
+    }
+
+    public String uploadAvtar(
+            @NonNull MultipartFile sourceFile,
+            @NonNull String userId
+    ) {
+        final String finalUploadPath = avtarUploadPath;
+        File targetFolder = new File(finalUploadPath);
+        if (!targetFolder.exists()) {
+            boolean folderCreated = targetFolder.mkdirs();
+            if (!folderCreated) {
+                log.warn("Failed to create the required folder: {}", targetFolder);
+                return null;
+            }
+        }
+        final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
+        String targetFilePath = finalUploadPath + File.separator + userId + "." + fileExtension;
+        Path targetPath = Paths.get(targetFilePath);
+        try {
+            Files.write(targetPath, sourceFile.getBytes());
+            log.info("Avtar saved to: {}", targetFilePath);
+            return targetFilePath;
+        } catch (IOException e) {
+            log.error("Avtar was not saved", e);
+        }
+        return null;
     }
 
     private String uploadFile(

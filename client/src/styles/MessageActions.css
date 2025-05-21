@@ -1,0 +1,47 @@
+.message-action-container {
+  position: fixed;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+._options {
+  background: #ffffff;
+  min-width: 160px;
+  padding: 8px 0;
+  border-radius: inherit;
+}
+
+._option {
+  padding: 8px 24px;
+  font-size: 14.5px;
+  color: #111b21;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.5;
+}
+
+._option:hover {
+  background-color: #f5f6f6;
+}
+
+._option:not(:last-child)::after {
+  content: none;
+}
+
+._option::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  filter: invert(42%) sepia(8%) saturate(591%) hue-rotate(169deg) brightness(93%) contrast(87%);
+}
+
+@media (max-width: 768px) {
+  ._option {
+    padding: 12px 24px;
+    font-size: 15px;
+  }
+}

@@ -2,13 +2,16 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import "../../styles/LeftBar.css";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
-function LeftBar() {
-  const connectedUser = {
-    username: "aniket205kadam",
-    avtar:
-      "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=600",
-  };
+function LeftBar({
+  openProfile,
+  openChatPreviews,
+  openStatusPreviews,
+  clickedLocation,
+}) {
+  const connectedUser = useSelector((state) => state.authentication);
 
   const messageNotification = 8;
   const isStatus = true;
@@ -18,19 +21,21 @@ function LeftBar() {
       <div className="container">
         <div className="menu">
           <div className="upper">
-            <div className="item clicked">
+            <div
+              className={`item ${clickedLocation === "CHATS" ? "clicked" : ""}`}
+              onClick={openChatPreviews}
+            >
               <svg
                 viewBox="0 0 24 24"
                 height="24"
                 width="24"
                 preserveAspectRatio="xMidYMid meet"
-                class
                 fill="none"
               >
-                <title>chats-filled</title>
+                <title>Chats</title>
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M4.8384 8.45501L5 8.70356V9V17.8333C5 18.7538 5.7462 19.5 6.6667 19.5H20.3333C21.2538 19.5 22 18.7538 22 17.8333V6.66667C22 5.74619 21.2538 5 20.3333 5H2.5927L4.8384 8.45501ZM8 14.5C8 13.6716 8.67157 13 9.5 13H14.5C15.3284 13 16 13.6716 16 14.5C16 15.3284 15.3284 16 14.5 16H9.5C8.67157 16 8 15.3284 8 14.5ZM9.5 8C8.67157 8 8 8.67157 8 9.5C8 10.3284 8.67157 11 9.5 11H16.5C17.3284 11 18 10.3284 18 9.5C18 8.67157 17.3284 8 16.5 8H9.5Z"
                   fill="currentColor"
                 ></path>
@@ -45,16 +50,20 @@ function LeftBar() {
                 </div>
               )}
             </div>
-            <div className="item">
+            <div
+              className={`item ${
+                clickedLocation === "STATUS" ? "clicked" : ""
+              }`}
+              onClick={openStatusPreviews}
+            >
               <svg
                 viewBox="0 0 24 24"
                 height="24"
                 width="24"
                 preserveAspectRatio="xMidYMid meet"
-                class
                 fill="none"
               >
-                <title>status-outline</title>
+                <title>Status</title>
                 <path
                   d="M13.5627 3.13663C13.6586 2.59273 14.1793 2.22466 14.7109 2.37438C15.7904 2.67842 16.8134 3.16256 17.7359 3.80858C18.9322 4.64624 19.9304 5.73574 20.6605 7.0005C21.3906 8.26526 21.8348 9.67457 21.9619 11.1294C22.06 12.2513 21.9676 13.3794 21.691 14.4662C21.5548 15.0014 20.9756 15.2682 20.4567 15.0793C19.9377 14.8903 19.6769 14.317 19.7996 13.7785C19.9842 12.9693 20.0421 12.1343 19.9695 11.3035C19.8678 10.1396 19.5124 9.01218 18.9284 8.00038C18.3443 6.98857 17.5457 6.11697 16.5887 5.44684C15.9055 4.96844 15.1535 4.601 14.3605 4.3561C13.8328 4.19314 13.4668 3.68052 13.5627 3.13663Z"
                   fill="currentColor"
@@ -69,8 +78,8 @@ function LeftBar() {
                   fill="currentColor"
                 ></path>
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M11.9999 16C14.2091 16 15.9999 14.2092 15.9999 12C15.9999 9.79088 14.2091 8.00002 11.9999 8.00002C9.7908 8.00002 7.99994 9.79088 7.99994 12C7.99994 14.2092 9.7908 16 11.9999 16ZM11.9999 18C15.3136 18 17.9999 15.3137 17.9999 12C17.9999 8.68631 15.3136 6.00002 11.9999 6.00002C8.68623 6.00002 5.99994 8.68631 5.99994 12C5.99994 15.3137 8.68623 18 11.9999 18Z"
                   fill="currentColor"
                 ></path>
@@ -79,20 +88,40 @@ function LeftBar() {
                   fill="currentColor"
                 ></path>
               </svg>
-              {isStatus && (
-                <div className="status-notification"></div>
-              )}
             </div>
-            <div className="item">
-                <img src="https://static.whatsapp.net/rsrc.php/v4/ye/r/W2MDyeo0zkf.png" alt="NamasteAppAI" />
+            <div
+              className="item"
+              onClick={() => window.open("https://chat.openai.com", "_blank")}
+            >
+              <img
+                src="https://static.whatsapp.net/rsrc.php/v4/ye/r/W2MDyeo0zkf.png"
+                alt="NamasteAppAI"
+                title="Namaste AI"
+              />
             </div>
           </div>
           <div className="lower">
-            <div className="item">
+            <div
+              className={`item ${
+                clickedLocation === "SETTINGS" ? "clicked" : ""
+              }`}
+            >
               <FontAwesomeIcon icon={faGear} />
             </div>
-            <div className="connected-user">
-              <img src={connectedUser.avtar} alt="" />
+            <div
+              className={`connected-user ${
+                clickedLocation === "PROFILE" ? "clicked" : ""
+              }`}
+              style={{ cursor: "pointer" }}
+              onClick={openProfile}
+            >
+              <img
+                src={
+                  connectedUser.avtar ||
+                  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQApAMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAAAQUCBAYDB//EADAQAQACAgECAggFBQEAAAAAAAABAgMRBAUhMVESEyJBU3GBoRUyQmFyIzSRscEz/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAEC/8QAFxEBAQEBAAAAAAAAAAAAAAAAAAERIf/aAAwDAQACEQMRAD8A+iANMgAAAAAAAAAAAAAAAAAAAAAAAAAAAA3eJ07LyNWt7FP38ZWVOlcav5qzbz3JqqAdDPTeL7sevlLVz9HjvbBef42NMVAzyY7Y7zS8TFo82AgAAAAAAAAAAAAAA3ulcX1+X1l49inu85aLo+m4oxcSka7zG5KsbMRqEgyoADT6lxI5GGZiP6le8S575usmHOdQxeq5mSIjUTO4+rURrAKgAgAAAAAAAAAAOqxRrHWI8ocr73U8e3p4aWj31hKr0ARQABR9biI5VZjxmi8UPWrRbmREfpr3WDQAVAAQAAAAAAAAAAXnRs/rMHqrT7VP9KN68fPbj5YyU93jHmVXUDx43Ix8ikWxz9PfD2ZUBEzGvEEZLRSk2tOoiNy5jkZZzZ75J98/Zv8AVOd6zeHFO6/qnzVixABUAAAAAAAAAAABQeuLjZs3/nSZjzbVekcifzTWPnJo1MOXJht6WO0xKwxdYvWP6uOLfvXsx/Bs3xKfc/B83xKfc4j1t1mNezhn6y0uTz8/I3E29GnlVsfg+b4tPufg+b4lPucFaLGej5ojtek/5eOXp3Jx9/Q3H7SaNQTMTWdTGp8kCgCoAIAAAAAJiJtMRWNzMipx0tkvFKVmbSuuF0ymKItm9q/l7oevT+JHGx7nvkt4z/xuJqoiNRqPBIIAAAjaQAAeHI4uHPGslY35x4qPm8K/Fnc98c+FnRsclK3rNbRuJ7TBo5QbPP4s8XNrxpb8stZpAAQAAAAWHR8Hp5py28KeHzV6+6VSKcSs6727yVW7s2x2bRWWzbHZsGW07hhsiQZG2OzYMtjHZsGWzbHZtB4dQwRyONaP1R3q53Wvm6nbnOXT0OTlrEdotOliPEBUAAAAHQ8P+1xfxc8vuHbfFx68hWxs2jZtBOzaNncE7No2bBltG0bNgnZtjtOwTs2x2bBltSdT/vL/AEXO1L1G3pcu+gaoCoAAAKC16VaZwWiZ7RbskFbiYBAABAAAAJQAJEAE+E/JQZbTbJaZ8ZkAYAKgAg//2Q=="
+                }
+                alt=""
+              />
             </div>
           </div>
         </div>

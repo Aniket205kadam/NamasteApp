@@ -1,5 +1,7 @@
 package com.aniketkadam.namaste_app.notification;
 
+import com.aniketkadam.namaste_app.message.Message;
+import com.aniketkadam.namaste_app.message.MessageResponse;
 import com.aniketkadam.namaste_app.message.MessageType;
 import lombok.*;
 
@@ -17,5 +19,6 @@ public class Notification {
     private String chatName;
     private MessageType messageType;
     private NotificationType type;
+    private MessageResponse message;
     private byte[] media;
 }

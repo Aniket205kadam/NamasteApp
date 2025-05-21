@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 @Builder
 public class AuthenticationResponse {
     private String token;
-    private LocalDateTime createAt;
-    private LocalDateTime expiredAt;
+    private String fullName;
+    private String id;
 }

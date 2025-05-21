@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,6 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ChatMapper mapper;
 
-    @Transactional
     public String createChat(
             @NonNull String senderId,
             @NonNull String receiverId
@@ -49,7 +49,16 @@ public class ChatService {
         User user = (User) connectedUser.getPrincipal();
         return chatRepository.findChatsBySenderId(user.getId())
                 .stream()
+                //.filter(chat -> !chat.getMessages().isEmpty())
+                //.sorted(Comparator.comparing(Chat::getLastMessageTime))
                 .map(chat -> mapper.toChatResponse(chat, user.getId()))
                 .toList();
+    }
+
+    public ChatResponse getChatById(@NonNull String chatId, Authentication connectedUser) {
+        return mapper.toChatResponse(chatRepository.findById(chatId)
+                        .orElseThrow(() -> new EntityNotFoundException("Chat with Id: " + chatId + " not found")),
+                ((User) connectedUser.getPrincipal()).getId()
+        );
     }
 }

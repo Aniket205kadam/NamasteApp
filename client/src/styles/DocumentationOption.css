@@ -1,0 +1,58 @@
+.file-select {
+    position: fixed;
+    bottom: 80px;
+    left: 470px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 200px;
+  }
+  
+  .file-select::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 15px;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: white transparent transparent;
+    filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.1));
+  }
+  
+  .options1 {
+    padding: 8px 0;
+  }
+  
+  .option1 {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    gap: 12px;
+    border: none;
+    background-color: inherit;
+  }
+  
+  .option1:hover {
+    background-color: #f5f6f6;
+  }
+  
+  .option1 svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .option1 span {
+    font-size: 14px;
+    color: #111b21;
+  }
+  
+  :root {
+    --attachment-type-documents-color: #8696a0;
+    --attachment-type-photos-color: #8696a0;
+    --attachment-type-camera-color: #8696a0;
+    --attachment-type-contacts-color: #8696a0;
+  }

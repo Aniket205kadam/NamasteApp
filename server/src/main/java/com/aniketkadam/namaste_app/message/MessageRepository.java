@@ -16,5 +16,12 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query(name = MessageConstants.SET_MESSAGES_TO_SEEN_BY_CHAT)
     @Modifying
-    void setMessagesToSeenByChat(@Param("chatId") String chatId, @Param("newState") MessageState state);
+    void setMessagesToSeenByChat(
+            @Param("chatId") String chatId,
+            @Param("newState") MessageState state,
+            @Param("receiverId") String receiverId
+    );
+
+    @Query(name = MessageConstants.FIND_TOTAL_UNREAD_MESSAGES)
+    List<Message> findTotalUnreadMessages(@Param("userId") String userId, @Param("state") MessageState state);
 }

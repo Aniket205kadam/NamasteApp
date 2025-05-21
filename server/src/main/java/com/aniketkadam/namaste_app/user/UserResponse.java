@@ -15,6 +15,8 @@ public class UserResponse {
     private String firstname;
     private String lastname;
     private String email;
+    private String avtar;
     private LocalDateTime lastSeen;
     private boolean isOnline;
+    private String about;
 }

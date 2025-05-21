@@ -1,82 +1,163 @@
 .card {
-    overflow: hidden;
-    position: relative;
-    text-align: left;
-    border-radius: 0.5rem;
-    max-width: 590px;
-    box-shadow: 0 20px 25px -5px #0000001a, 0 10px 10px -5px #0000000a;
-    background-color: #fff;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  border-radius: 0.5rem;
+  max-width: 590px;
+  margin: 2rem auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.header {
+  padding: 2rem 2rem 1.5rem;
+}
+
+.image {
+  display: flex;
+  margin: 0 auto 1.5rem;
+  background-color: #e2feee;
+  justify-content: center;
+  align-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  animation: animate 0.6s linear alternate-reverse infinite;
+}
+
+.image svg {
+  color: #1aa06d;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.login-content {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.login-title {
+  color: #1a1a1a;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.login-content p {
+  color: #595b5f;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.email, .password {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.email label, .password label {
+  display: block;
+  color: #4a5568;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.email input, .password input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.email input:disabled {
+  background-color: #f7fafc;
+  color: #718096;
+  cursor: not-allowed;
+}
+
+.password input:focus {
+  outline: none;
+  border-color: #1aa06d;
+  box-shadow: 0 0 0 3px rgba(26, 160, 109, 0.1);
+}
+
+.login-button {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background-color: #1aa06d;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #16855c;
+}
+
+.content {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.title {
+  color: #1aa06d;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.message {
+  margin-top: 1rem;
+  color: #4a5568;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.actions {
+  margin: 2rem 1rem 1rem;
+}
+
+.continue {
+  background-color: #1aa06d;
+  padding: 15px;
+  transition: background-color 0.3s ease;
+  border-radius: 50%;
+  width: 100px;
+  border: none;
+  color: #fff;
+}
+
+.continue:hover {
+  background-color: #16855c;
+}
+
+@media (max-width: 640px) {
+  .card {
+      margin: 1rem;
+      max-width: 95%;
   }
   
   .header {
-    padding: 1.25rem 1rem 1rem 1rem;
-  }
-  
-  .image {
-    display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #e2feee;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 9999px;
-    animation: animate .6s linear alternate-reverse infinite;
-    transition: .6s ease;
-  }
-  
-  .image svg {
-    color: #0afa2a;
-    width: 2rem;
-    height: 2rem;
-  }
-  
-  .content {
-    margin-top: 0.75rem;
-    text-align: center;
+      padding: 1.5rem 1.25rem;
   }
   
   .title {
-    color: #066e29;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.5rem;
+      font-size: 1.25rem;
   }
-  
-  .message {
-    margin-top: 0.5rem;
-    color: #595b5f;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-  
-  .actions {
-    margin: 0.75rem 1rem;
-  }
-  
-  .continue {
-    display: inline-flex;
-    padding: 0.5rem 1rem;
-    background-color: #1aa06d;
-    color: #ffffff;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    font-weight: 500;
-    justify-content: center;
-    width: 100%;
-    border-radius: 0.375rem;
-    border: none;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-  
-  @keyframes animate {
-    from {
-      transform: scale(1);
-    }
-  
-    to {
-      transform: scale(1.09);
-    }
-  }
+}
+
+@keyframes animate {
+  from { transform: scale(1); }
+  to { transform: scale(1.09); }
+}

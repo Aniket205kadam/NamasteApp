@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/EmailVerification.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../animation/Loading";
 import authService from "../../service/AuthService";
@@ -11,21 +11,59 @@ function EmailVerification() {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
   const [isExpired, setIsExpired] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const sendOtp = async () => {
+    setLoading(true);
     const otpResponse = await authService.emailVerification(email, otp);
     if (!otpResponse.success) {
-      toast.error(otpResponse.error || "Failed to verifiy the email!");
-      return;
+      console.log(otpResponse);
+      if (otpResponse.error.message.toLowerCase().includes("expired")) {
+        toast.warn(
+          "Your one-time password (OTP) has expired. A new OTP has been sent to your email."
+        );
+        setOtp("");
+        setLoading(false);
+        setTimeLeft(120);
+        return;
+      } else if (
+        otpResponse.error.message
+          .toLowerCase()
+          .includes("verification code is not found")
+      ) {
+        setError(otpResponse.error.message);
+        setOtp("");
+        setLoading(false);
+        return;
+      } else {
+        toast.error(otpResponse.error || "Failed to verifiy the email!");
+        setOtp("");
+        setLoading(false);
+        return;
+      }
     }
     toast.success("Successfuly verify the email!");
-    navigator
+    setLoading(false);
+    navigate(`/success-asuwecwoew12@1slks/${email}`);
+  };
+
+  const resendOtpHandler = async () => {
+    const otpResponse = await authService.resendOtp(email);
+    if (!otpResponse.success) {
+      toast.error(otpResponse.error.message || "Failed to resend the mail!");
+      return;
+    }
+    toast.success("Successfully send new One-Time Password (OTP) on your register email address!");
+    setTimeLeft(120);
+    setOtp("");
+    setIsExpired(false);
+    setLoading(false);
   };
 
   useEffect(() => {
     if (otp.length === 6) {
-      toast.info(otp);
-      setLoading(true);
+      sendOtp();
     }
   }, [otp]);
 
@@ -69,6 +107,11 @@ function EmailVerification() {
             </div>
           )}
         </div>
+        {error && (
+          <div className="error">
+            <span className="error-msg">{error}</span>
+          </div>
+        )}
         {!isExpired && (
           <p className="timer">
             Time left:{" "}
@@ -80,37 +123,12 @@ function EmailVerification() {
         {isExpired && (
           <p className="send-otp">
             Didn't receive the code?{" "}
-            <span className="underlined">Resend email</span>
+            <span className="underlined" onClick={resendOtpHandler}>Resend email</span>
           </p>
         )}
       </form>
-      {/* <div className="wrapper">
-        <OtpExpired />
-      </div> */}
     </div>
   );
 }
-
-const OtpExpired = () => {
-  return (
-    <div className="card">
-      <div className="card-content">
-        <p className="card-heading">OTP Expired</p>
-        <p className="card-description">
-          Your one-time password has expired. Please request a new one to
-          continue.
-        </p>
-      </div>
-      <div className="card-button-wrapper">
-        <button className="card-button primary">Resend OTP</button>
-      </div>
-      <button className="exit-button">
-        <svg height="20px" viewBox="0 0 384 512">
-          <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
-        </svg>
-      </button>
-    </div>
-  );
-};
 
 export default EmailVerification;
