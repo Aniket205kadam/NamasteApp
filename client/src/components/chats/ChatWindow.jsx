@@ -37,7 +37,6 @@ function ChatWindow({ chatId, openSearch }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
   const connectedUser = useSelector((state) => state.authentication);
-  const [time, setTime] = useState("");
   const stompClient = useRef(null);
   const [file, setFile] = useState(null);
   const [isFileSelectionOptionOpen, setIsFileSelectionOptionOpen] =
@@ -252,7 +251,6 @@ function ChatWindow({ chatId, openSearch }) {
           `/users/${connectedUser.id}/chat`,
           (messages) => {
             const notification = JSON.parse(messages.body);
-            console.log("Notification: ", notification);
             if (notification.type === "MESSAGE") {
               const newMsg = notification.message;
               // make change here

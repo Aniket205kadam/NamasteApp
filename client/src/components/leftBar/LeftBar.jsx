@@ -1,9 +1,12 @@
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../styles/LeftBar.css";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import chatService from "../../service/ChatService";
+import { toast } from "react-toastify";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 function LeftBar({
   openProfile,
@@ -12,9 +15,62 @@ function LeftBar({
   clickedLocation,
 }) {
   const connectedUser = useSelector((state) => state.authentication);
+  const [notification, setNotification] = useState(0);
+  const stompClient = useRef(null);
 
-  const messageNotification = 8;
-  const isStatus = true;
+  const fetchAllNotificationCount = async () => {
+    const notificationResponse = await chatService.getAllNotifications(
+      connectedUser.authToken
+    );
+    if (!notificationResponse.success) {
+      console.error("Failed to fetch the total count of notification");
+      return;
+    }
+    setNotification(parseInt(notificationResponse.response));
+  };
+
+  useEffect(() => {
+    fetchAllNotificationCount();
+  }, []);
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/ws");
+    stompClient.current = Stomp.over(socket);
+
+    stompClient.current.connect(
+      {},
+      () => {
+        stompClient.current.subscribe(
+          `/users/${connectedUser.id}/chat`,
+          (messages) => {
+            const notification = JSON.parse(messages.body);
+            if (
+              notification.receiverId === connectedUser.id &&
+              notification.message.state === "SENT" &&
+              notification.type === "MESSAGE"
+            ) {
+              setNotification((prev) => prev + 1);
+            }
+            if (
+              notification.senderId === connectedUser.id &&
+              notification.type === "SEEN"
+            ) {
+              setNotification(0);
+            }
+          }
+        );
+      },
+      (error) => {
+        toast.error("Failed to connect to the server!");
+        console.log("Websocker error:", error);
+      }
+    );
+    return () => {
+      if (stompClient.current?.connected) {
+        stompClient.current.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <div className="left-bar">
@@ -44,9 +100,9 @@ function LeftBar({
                   fill="currentColor"
                 ></path>
               </svg>
-              {messageNotification > 0 && (
+              {notification > 0 && (
                 <div className="message-notification">
-                  <span>{messageNotification}</span>
+                  <span>{notification}</span>
                 </div>
               )}
             </div>
