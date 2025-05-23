@@ -120,9 +120,11 @@
   font-weight: 500;
 }
 
-.last-msg-time {
-  color: #667781;
-  font-size: 12px;
+.info-msg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
 .last-msg {
@@ -131,6 +133,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+}
+
+.last-msg-time {
+  color: #667781;
+  font-size: 12px;
+  flex-shrink: 0;
 }
 
 .unread-msg {

@@ -14,11 +14,13 @@ function Chat({ chat, setCurrentChat }) {
         <div className="name">
           <span>{chat.name}</span>
         </div>
-        <div className="last-msg-time">
-          <span>{useNotificationTimeConvertor(chat.lastMessageTime)}</span>
-        </div>
-        <div className="last-msg">
-          <span>{chat.lastMessage}</span>
+        <div className="info-msg">
+          <div className="last-msg">
+            <span>{chat.lastMessage}</span>
+          </div>
+          <div className="last-msg-time">
+            <span>{useNotificationTimeConvertor(chat.lastMessageTime)}</span>
+          </div>
         </div>
         {chat.unreadCount > 0 && (
           <div className="unread-msg">

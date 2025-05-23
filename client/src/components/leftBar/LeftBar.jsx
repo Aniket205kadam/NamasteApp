@@ -51,6 +51,7 @@ function LeftBar({
             ) {
               setNotification((prev) => prev + 1);
             }
+
             if (
               notification.senderId === connectedUser.id &&
               notification.type === "SEEN"
