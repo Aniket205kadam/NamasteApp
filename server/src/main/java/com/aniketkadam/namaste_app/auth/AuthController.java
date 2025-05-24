@@ -80,8 +80,6 @@ public class AuthController {
     ) throws MessagingException {
         service.sendOtp(email);
     }
-<<<<<<< HEAD
-=======
 
     @PostMapping("/github")
     public ResponseEntity<?> githubLogin(
@@ -235,5 +233,4 @@ public class AuthController {
         newUser.setAbout("Hey there! I am using NamasteApp");
         return userRepository.save(newUser);
     }
->>>>>>> 6bb01d1 (feat: User can signup with google)
 }

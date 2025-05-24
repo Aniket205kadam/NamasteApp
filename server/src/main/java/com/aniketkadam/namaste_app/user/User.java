@@ -38,13 +38,11 @@ import java.util.List;
                 OR LOWER(user.email) LIKE LOWER(CONCAT('%', :query, '%'))
                 """
 )
-<<<<<<< HEAD
-=======
+
 @NamedQuery(
         name = UserConstants.FIND_USER_BY_SUB,
         query = "SELECT user FROM User user WHERE user.sub = :sub"
 )
->>>>>>> 6bb01d1 (feat: User can signup with google)
 public class User extends BaseAuditingEntity implements UserDetails, Principal {
 
     private static final int LAST_ACTIVATE_INTERVAL = 5;
