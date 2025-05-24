@@ -156,6 +156,7 @@ function ChatWindow({ chatId, openSearch }) {
       toast.error("Failed to upload the file");
       return;
     }
+    setMessages((prev) => [...prev, fileResponse.response]);
     setFile(null);
   };
 
@@ -354,10 +355,7 @@ function ChatWindow({ chatId, openSearch }) {
         </div>
       </div>
 
-      <div
-        className="chat-window__messages"
-        onContextMenu={handleContextMenu}
-      >
+      <div className="chat-window__messages" onContextMenu={handleContextMenu}>
         {showDelete.status && (
           <DeletePopup
             deleteMessage={deleteMessage}
