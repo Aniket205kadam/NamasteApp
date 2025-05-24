@@ -128,6 +128,45 @@ class AuthService {
       };
     }
   }
+<<<<<<< HEAD
+=======
+
+  async loginWithGoogle(credentialResponse) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/auth/google`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            token: credentialResponse.credential,
+          }),
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+        response: await response.json(),
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to signup the new user!",
+      };
+    }
+  }
+  
+>>>>>>> 6bb01d1 (feat: User can signup with google)
 }
 
 export default new AuthService();

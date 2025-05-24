@@ -94,6 +94,10 @@
   
   .chat-window__messages {
     flex: 1;
+<<<<<<< HEAD
+=======
+    padding-top: 2%;
+>>>>>>> 6bb01d1 (feat: User can signup with google)
     padding-right: 60px;
     padding-left: 60px;
     padding-bottom: 20px;

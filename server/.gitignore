@@ -32,4 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 uploads
+<<<<<<< HEAD
 avtar
+=======
+avtar
+.env
+>>>>>>> 6bb01d1 (feat: User can signup with google)

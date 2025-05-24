@@ -19,4 +19,10 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(name = UserConstants.SEARCH_USER_BY_NAME_OR_EMAIL)
     List<User> searchUsers(@Param("query") String query);
+<<<<<<< HEAD
+=======
+
+    @Query(name = UserConstants.FIND_USER_BY_SUB)
+    Optional<User> findBySub(@Param("sub") String sub);
+>>>>>>> 6bb01d1 (feat: User can signup with google)
 }

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React, { useEffect, useState } from "react";
+>>>>>>> 6bb01d1 (feat: User can signup with google)
 import Logo from "../../assets/NamasteApp.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -8,6 +12,12 @@ import { useDispatch } from "react-redux";
 import Loader from "../animation/Loader";
 import authService from "../../service/AuthService";
 import { login } from "../../store/authSlice";
+<<<<<<< HEAD
+=======
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { toast } from "react-toastify";
+import GoogleOAuth from "./GoogleOAuth";
+>>>>>>> 6bb01d1 (feat: User can signup with google)
 
 function Login() {
   const { register, handleSubmit } = useForm();
@@ -148,6 +158,7 @@ function Login() {
           <span>Or</span>
           <hr className="line" />
         </div>
+<<<<<<< HEAD
         <button title="Sign In" type="submit" className="sign-in_ggl">
           <FontAwesomeIcon icon={faGoogle} size="xl" />
           <span>Sign In with Google</span>
@@ -156,6 +167,11 @@ function Login() {
           <FontAwesomeIcon icon={faGithub} size="xl" />
           <span>Sign In with Github</span>
         </button>
+=======
+
+        <GoogleOAuth />
+
+>>>>>>> 6bb01d1 (feat: User can signup with google)
         <div className="login-redirect">
           <p>Don't have an account? </p>
           <button
