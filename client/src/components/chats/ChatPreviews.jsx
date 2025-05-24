@@ -35,10 +35,6 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
           return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
         })
     );
-<<<<<<< HEAD
-=======
-    console.log("chat response: ", chatResponse);
->>>>>>> 6bb01d1 (feat: User can signup with google)
     setLoading(false);
   };
 

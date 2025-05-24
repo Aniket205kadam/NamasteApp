@@ -128,8 +128,6 @@ class AuthService {
       };
     }
   }
-<<<<<<< HEAD
-=======
 
   async loginWithGoogle(credentialResponse) {
     try {
@@ -165,8 +163,6 @@ class AuthService {
       };
     }
   }
-  
->>>>>>> 6bb01d1 (feat: User can signup with google)
 }
 
 export default new AuthService();

@@ -9,10 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 import Loader from "../animation/Loader";
-<<<<<<< HEAD
-=======
 import GoogleOAuth from "./GoogleOAuth";
->>>>>>> 6bb01d1 (feat: User can signup with google)
 
 function Signup() {
   const { register, handleSubmit } = useForm();
@@ -246,28 +243,9 @@ function Signup() {
           <span>Or</span>
           <hr className="line" />
         </div>
-<<<<<<< HEAD
-        <button
-          title="Sign Up with Google"
-          type="button"
-          className="sign-in_ggl"
-        >
-          <FontAwesomeIcon icon={faGoogle} size="xl" />
-          <span>Sign Up with Google</span>
-        </button>
-        <button
-          title="Sign Up with Github"
-          type="button"
-          className="sign-in_git"
-        >
-          <FontAwesomeIcon icon={faGithub} size="xl" />
-          <span>Sign Up with Github</span>
-        </button>
-=======
-        
+
         <GoogleOAuth />
 
->>>>>>> 6bb01d1 (feat: User can signup with google)
         <div className="login-redirect">
           <p>Already have an account? </p>
           <button

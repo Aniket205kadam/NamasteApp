@@ -1,23 +1,14 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
-
-const TENOR_API_KEY = "AIzaSyC2hrWXdmAuZ6UoNxmyT_98BYEErQuoOoI";
-const CLIENT_KEY = "NamasteApp";
-=======
 import AppConfig from "../../config/AppConfig";
->>>>>>> 6bb01d1 (feat: User can signup with google)
 
 function GIF({ onSelectGif }) {
   const [gifs, setGifs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-<<<<<<< HEAD
-=======
   const TENOR_API_KEY = AppConfig.tenorApiKey;
   const CLIENT_KEY = AppConfig.tenorClientKey;
->>>>>>> 6bb01d1 (feat: User can signup with google)
 
   const fetchGif = async () => {
     const gifResponse = await fetch(
