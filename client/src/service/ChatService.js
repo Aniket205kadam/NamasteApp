@@ -12,7 +12,10 @@ class ChatService {
         },
       });
       if (!response.ok) {
+<<<<<<< HEAD
         console.info("error", response.status);
+=======
+>>>>>>> 6bb01d1 (feat: User can signup with google)
         const error = await response.json();
         return {
           success: false,
@@ -25,7 +28,10 @@ class ChatService {
         response: await response.json(),
       };
     } catch (error) {
+<<<<<<< HEAD
       console.info("error", error);
+=======
+>>>>>>> 6bb01d1 (feat: User can signup with google)
       return {
         success: false,
         error: error.message || "Failed to fetch chats!",

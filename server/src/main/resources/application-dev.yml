@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/namesteapp_db
-    username: postgres
-    password: postgres-password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       max-lifetime: 60000
@@ -19,10 +19,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: localhost
+    host: ${MAIL_HOST}
     port: 1025
-    username: namasteapp.com
-    password: namasteapp-password
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       smtp:
         trust: "*"
@@ -33,6 +33,17 @@ spring:
       timeout: 3000
       writetimeout: 5000
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLINET_SECRET}
+
 springdoc:
   default-consumes-media-type: application/json
 
@@ -40,8 +51,13 @@ application:
   security:
     jwt:
       expiration: 259200000
-      secret-key: dEHmGxg1Pd1xvTNdD2UBLQpYhc4FncMG5D-6qmTY6re0ZVgdPF4RN1xN9NEm5NtE0VWkbafCNdRJTN0FWbVDcg==
+      secret-key: ${SERVER_SECRET}
   file:
     uploads:
+<<<<<<< HEAD
       media-output-path: ./uploads
       avtar-output-path: ./avtar
+=======
+      media-output-path: ${FILE_UPLOAD_LOCATION}
+      avtar-output-path: ${AVTAR_UPLOAD_LOCATION}
+>>>>>>> 6bb01d1 (feat: User can signup with google)

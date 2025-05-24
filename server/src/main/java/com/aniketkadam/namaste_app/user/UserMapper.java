@@ -14,12 +14,22 @@ public class UserMapper {
 
     public UserResponse toUserResponse(User user) {
         String avtar = null;
+<<<<<<< HEAD
         if (user.getAvtar() != null) {
+=======
+        if (user.getAvtar() != null && !(user.getAvtar().startsWith("https"))) {
+>>>>>>> 6bb01d1 (feat: User can signup with google)
             avtar = "data:image/"
                     + getFileExtension(user.getAvtar())
                     + ";base64,"
                     + Base64.getEncoder().encodeToString(FileUtils.readFileFromDestination(user.getAvtar()));
         }
+<<<<<<< HEAD
+=======
+        if (user.getAvtar() != null && user.getAvtar().startsWith("https")) {
+            avtar = user.getAvtar();
+        }
+>>>>>>> 6bb01d1 (feat: User can signup with google)
         return UserResponse.builder()
                 .id(user.getId())
                 .firstname(user.getFirstname())

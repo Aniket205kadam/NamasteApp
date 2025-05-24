@@ -15,6 +15,10 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+<<<<<<< HEAD
+=======
+    "@react-oauth/google": "^0.12.2",
+>>>>>>> 6bb01d1 (feat: User can signup with google)
     "@reduxjs/toolkit": "^2.7.0",
     "@stomp/stompjs": "^7.1.1",
     "emoji-picker-react": "^4.12.2",
