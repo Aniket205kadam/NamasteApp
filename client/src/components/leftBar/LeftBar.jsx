@@ -7,15 +7,19 @@ import chatService from "../../service/ChatService";
 import { toast } from "react-toastify";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import AIService from "../../service/AIService";
+import ChatService from "../../service/ChatService";
 
 function LeftBar({
   openProfile,
   openChatPreviews,
   openStatusPreviews,
   clickedLocation,
+  setCurrentOpenChatId,
 }) {
   const connectedUser = useSelector((state) => state.authentication);
   const [notification, setNotification] = useState(0);
+  const [bot, setBot] = useState(null);
   const stompClient = useRef(null);
 
   const fetchAllNotificationCount = async () => {
@@ -29,8 +33,27 @@ function LeftBar({
     setNotification(parseInt(notificationResponse.response));
   };
 
+  const fetchAiBotInfo = async () => {
+    const botResponse = await AIService.getAIBot(connectedUser.authToken);
+    if (!botResponse.success) {
+      console.error("Failed to load the AI bot information");
+      return;
+    }
+    setBot(botResponse.response);
+  }
+
+  const createChat = async () => {
+    const chatResponse = await ChatService.createChats(connectedUser.id, bot.id, connectedUser.authToken);
+    if (!chatResponse.success) {
+      console.error("Failed to create the chat with ", bot.firstname + bot.lastname);
+      return;
+    }
+    setCurrentOpenChatId(chatResponse.response.response);
+  }
+
   useEffect(() => {
     fetchAllNotificationCount();
+    fetchAiBotInfo();
   }, []);
 
   useEffect(() => {
@@ -148,7 +171,7 @@ function LeftBar({
             </div>
             <div
               className="item"
-              onClick={() => window.open("https://chat.openai.com", "_blank")}
+              onClick={createChat}
             >
               <img
                 src="https://static.whatsapp.net/rsrc.php/v4/ye/r/W2MDyeo0zkf.png"

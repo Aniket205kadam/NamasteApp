@@ -1,5 +1,6 @@
 package com.aniketkadam.namaste_app.message;
 
+import com.aniketkadam.namaste_app.ai.AIService;
 import com.aniketkadam.namaste_app.chat.Chat;
 import com.aniketkadam.namaste_app.chat.ChatRepository;
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
@@ -9,11 +10,13 @@ import com.aniketkadam.namaste_app.notification.Notification;
 import com.aniketkadam.namaste_app.notification.NotificationService;
 import com.aniketkadam.namaste_app.notification.NotificationType;
 import com.aniketkadam.namaste_app.user.User;
+import com.aniketkadam.namaste_app.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -33,34 +36,60 @@ public class MessageService {
     private final NotificationService notificationService;
     private final FileService fileService;
     private final MessageMapper mapper;
+    private final AIService aiService;
 
     @Transactional
     public MessageResponse saveMessage(MessageRequest request) {
         Chat chat = chatRepository.findById(request.getChatId())
                 .orElseThrow(() -> new EntityNotFoundException("Chat with Id: " + request.getChatId() + " not found"));
-        Message message = Message.builder()
-                .content(request.getContent())
-                .chat(chat)
-                .senderId(request.getSenderId())
-                .receiverId(request.getReceiverId())
-                .type(request.getType())
-                .state(MessageState.SENT)
-                .gifUrl(request.getGifUrl())
-                .replyId(request.getReplyId())
-                .build();
-        Message savedMessage = messageRepository.save(message);
 
-        Notification notification = Notification.builder()
-                .chatId(chat.getId())
-                .messageType(request.getType())
-                .content(request.getContent())
-                .senderId(request.getSenderId())
-                .receiverId(request.getReceiverId())
-                .message(mapper.toMessageResponse(savedMessage))
-                .type(NotificationType.MESSAGE)
-                .chatName(chat.getTargetChatName(message.getSenderId()))
-                .build();
-        notificationService.sendNotification(request.getReceiverId(), notification);
+        Message savedMessage = null;
+
+        if (aiService.sendMessageForBot(request)) {
+            Message message = Message.builder()
+                    .content(request.getContent())
+                    .chat(chat)
+                    .senderId(request.getSenderId())
+                    .receiverId(request.getReceiverId())
+                    .type(request.getType())
+                    .state(MessageState.SEEN)
+                    .gifUrl(request.getGifUrl())
+                    .replyId(request.getReplyId())
+                    .build();
+            savedMessage = messageRepository.save(message);
+            chat.getMessages().add(savedMessage);
+            chatRepository.save(chat);
+
+            // if this message for bot then we are forward this to bot
+            aiService.generateResponseFromAI(request, savedMessage);
+        } else {
+            Message message = Message.builder()
+                    .content(request.getContent())
+                    .chat(chat)
+                    .senderId(request.getSenderId())
+                    .receiverId(request.getReceiverId())
+                    .type(request.getType())
+                    .state(MessageState.SENT)
+                    .gifUrl(request.getGifUrl())
+                    .replyId(request.getReplyId())
+                    .build();
+            savedMessage = messageRepository.save(message);
+            chat.getMessages().add(savedMessage);
+            chatRepository.save(chat);
+
+            // send notification to the receiver
+            Notification notification = Notification.builder()
+                    .chatId(chat.getId())
+                    .messageType(request.getType())
+                    .content(request.getContent())
+                    .senderId(request.getSenderId())
+                    .receiverId(request.getReceiverId())
+                    .message(mapper.toMessageResponse(savedMessage))
+                    .type(NotificationType.MESSAGE)
+                    .chatName(chat.getTargetChatName(message.getSenderId()))
+                    .build();
+            notificationService.sendNotification(request.getReceiverId(), notification);
+        }
         return mapper.toMessageResponse(savedMessage);
     }
 

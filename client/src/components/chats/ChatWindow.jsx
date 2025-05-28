@@ -31,6 +31,7 @@ import UserService from "../../service/UserService";
 import GIFLogo from "./GIFLogo";
 import ChatActions from "./ChatActions";
 import DeletePopup from "./DeletePopup";
+import AIService from "../../service/AIService";
 
 function ChatWindow({ chatId, openSearch }) {
   const [chat, setChat] = useState({ name: "NamasteApp User" });
@@ -54,6 +55,8 @@ function ChatWindow({ chatId, openSearch }) {
     status: false,
     message: null,
   });
+  const [isBotChat, setIsBotChat] = useState(false);
+  const [isChatLoaded, setIsChatLoaded] = useState(false);
   const deletePopupRef = useRef(null);
   const messageRef = useRef();
 
@@ -72,6 +75,7 @@ function ChatWindow({ chatId, openSearch }) {
       return;
     }
     setChat(chatResponse.response);
+    setIsChatLoaded(true);
   };
 
   const fetchMessages = async () => {
@@ -229,6 +233,16 @@ function ChatWindow({ chatId, openSearch }) {
     );
   };
 
+  const fetchAIBot = async () => {
+    const botResponse = await AIService.getAIBot(connectedUser.authToken);
+    if (!botResponse.success) {
+      console.error("Failed to load the AI Bot");
+      return;
+    }
+    const bot = botResponse.response;
+    setIsBotChat(bot.id === chat.receiverId || bot.id === chat.senderId);
+  };
+
   useEffect(() => {
     setReply(null);
     fetchChat();
@@ -300,6 +314,12 @@ function ChatWindow({ chatId, openSearch }) {
       messageRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
+  useEffect(() => {
+    if (isChatLoaded) {
+      fetchAIBot();
+    }
+  }, [chat]);
 
   useEffect(() => {
     if (file) {
@@ -478,11 +498,13 @@ function ChatWindow({ chatId, openSearch }) {
         </div>
       )}
       <div className="chat-window__input">
-        <FontAwesomeIcon
-          icon={faPlus}
-          className="chat-window__input-icon"
-          onClick={() => setIsFileSelectionOptionOpen(true)}
-        />
+        {!isBotChat && (
+          <FontAwesomeIcon
+            icon={faPlus}
+            className="chat-window__input-icon"
+            onClick={() => setIsFileSelectionOptionOpen(true)}
+          />
+        )}
         {isDisplayEmojis && (
           <Emojis ref={emojiRef} setMsg={setMsg} sendGif={sendGif} />
         )}
@@ -503,10 +525,12 @@ function ChatWindow({ chatId, openSearch }) {
           />
           {msg.length === 0 ? (
             <button className="send-btn">
-              <FontAwesomeIcon
-                icon={faMicrophone}
-                className="chat-window__input-icon"
-              />
+              {!isBotChat && (
+                <FontAwesomeIcon
+                  icon={faMicrophone}
+                  className="chat-window__input-icon"
+                />
+              )}
             </button>
           ) : (
             <button

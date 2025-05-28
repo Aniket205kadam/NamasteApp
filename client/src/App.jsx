@@ -51,6 +51,7 @@ function App() {
     <div className="app">
       <div className="left-bar-section">
         <LeftBar
+          setCurrentOpenChatId={setCurrentOpenChatId}
           openProfile={() => {
             setIsChatPreviews(false);
             setIsCreateChatOpen(false);
