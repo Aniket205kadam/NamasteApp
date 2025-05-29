@@ -124,6 +124,10 @@ public class StatusService {
         User user = (User) connectedUser.getPrincipal();
         Status status = repository.findById(statusId)
                 .orElseThrow(() -> new EntityNotFoundException("Status with ID: " + statusId + " not found"));
+        if (user.getId().equals(status.getUser().getId())) {
+            log.warn("Status owner not view there own status!");
+            return;
+        }
         boolean isCurrentWatchStatus = status.getVisibilityList()
                 .stream()
                 .anyMatch(id -> id.equals(user.getId()));
@@ -173,5 +177,14 @@ public class StatusService {
             log.error("Failed to delete the status media: {}", mediaUrl);
             throw new OperationNotPermittedException("Failed to delete the status media: " + mediaUrl);
         }
+    }
+
+    public List<StatusResponse> getMyStatuses(Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        List<Status> statuses = repository.findStatusesByUser(user.getId());
+        return statuses.stream()
+                .filter(s -> s.getExpiresAt().isAfter(LocalDateTime.now()))
+                .map(statusMapper::toStatusResponse)
+                .toList();
     }
 }

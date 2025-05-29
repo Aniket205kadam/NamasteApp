@@ -22,6 +22,10 @@ import java.util.Set;
         name = StatusConstants.FIND_STATUSES_VISIBLE_TO_USER,
         query = "SELECT status FROM Status status WHERE :userId MEMBER OF status.visibilityList"
 )
+@NamedQuery(
+        name = StatusConstants.FIND_STATUSES_BY_USER,
+        query = "SELECT status FROM Status status WHERE status.user.id = :userId"
+)
 public class Status extends BaseAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

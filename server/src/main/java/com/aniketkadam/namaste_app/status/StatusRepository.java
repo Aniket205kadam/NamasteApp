@@ -12,4 +12,7 @@ public interface StatusRepository extends JpaRepository<Status, String> {
 
     @Query(name = StatusConstants.FIND_STATUSES_VISIBLE_TO_USER)
     List<Status> findStatusesVisibleToUser(@Param("userId") String userId);
+
+    @Query(name = StatusConstants.FIND_STATUSES_BY_USER)
+    List<Status> findStatusesByUser(@Param("userId") String userId);
 }

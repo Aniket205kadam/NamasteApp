@@ -77,4 +77,13 @@ public class StatusController {
     ) throws OperationNotPermittedException {
         service.deleteStatus(statusId, connectedUser);
     }
+
+    @GetMapping("/m")
+    public ResponseEntity<List<StatusResponse>> getMyStatus(
+            Authentication connectedUser
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getMyStatuses(connectedUser));
+    }
 }
