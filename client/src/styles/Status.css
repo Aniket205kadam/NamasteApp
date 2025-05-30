@@ -1,0 +1,152 @@
+.status {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 10px;
+}
+
+.status-page-heading {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0 15px;
+}
+
+.status-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avtar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.avtar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.status-owner-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+}
+
+.status-created-time {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
+}
+
+.action-btns {
+  display: flex;
+  gap: 15px;
+}
+
+.status-btn {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.status-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.status-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.media-content {
+  width: 100%;
+  height: 680px;
+  margin-top: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+}
+
+.media-content img,
+.media-content video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.media-content video {
+  width: 100%;
+  height: 100%;
+}
+
+.text-contain {
+  padding: 25px;
+  border-radius: 8px;
+  font-size: 32px;
+  font-weight: 300;
+  text-align: center;
+  color: white;
+  line-height: 1.3;
+  max-width: 90%;
+  word-wrap: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-caption-section {
+  position: absolute;
+  bottom: 20%;
+  left: 0;
+  right: 0;
+  padding: 0 20px;
+  text-align: center;
+  z-index: 10;
+}
+
+.status-caption {
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 15px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  max-width: 80%;
+  word-wrap: break-word;
+  backdrop-filter: blur(5px);
+}

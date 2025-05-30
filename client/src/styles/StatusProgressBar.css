@@ -1,0 +1,39 @@
+.progress-container {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  padding: 0 10px;
+  z-index: 10;
+}
+
+.progress-segment {
+  height: 2px;
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-segment.active {
+  background-color: #fff;
+}
+
+.progress-segment.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: #fff;
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+  from { width: 0; }
+  to { width: 100%; }
+}

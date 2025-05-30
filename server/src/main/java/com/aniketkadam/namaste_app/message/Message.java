@@ -58,7 +58,6 @@ public class Message extends BaseAuditingEntity {
     @Column(columnDefinition = "TEXT")
     private String fileOriginalName;
     private String replyId;
-
     private Boolean isDeleted;
     private Boolean isDeletedFromReceiver;
 }

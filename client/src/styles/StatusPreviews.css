@@ -26,14 +26,10 @@
   .status-action-btn {
     background: none;
     border: none;
-    color: #aebac1;
+    color: #000000;
     cursor: pointer;
     padding: 8px;
     transition: all 0.3s;
-  }
-  
-  .status-action-btn:hover {
-    color: #d1d7db;
   }
   
   .my-status {
@@ -45,19 +41,23 @@
     border-bottom: 12px solid #dfe6eb;
   }
   
-  .my-status:hover {
-    background-color: #202c33;
-  }
-  
   .status-avatar-container {
     position: relative;
     margin-right: 16px;
+  }
+
+  .status-msg {
+    padding: 20px;
   }
   
   .status-avatar {
     width: 56px;
     height: 56px;
     border-radius: 50%;
+    /* border: 2px solid #00a884; */
+  }
+
+  .unseen-status {
     border: 2px solid #00a884;
   }
   
@@ -72,7 +72,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #111b21;
+    border: 2px solid #ffffff;
   }
   
   .status-info {
@@ -107,7 +107,7 @@
   }
   
   .status-item:hover {
-    background-color: #202c33;
+    background-color: #f2f4f5;
   }
   
   .status-indicator {
@@ -141,6 +141,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    object-fit: cover;
   }
   
   .status-user-info {

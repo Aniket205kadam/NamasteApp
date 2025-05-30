@@ -12,6 +12,7 @@ import ProtectedRoute from "./page/auth/ProtectedRoute.jsx";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { Bounce, ToastContainer } from "react-toastify";
+import StatusPage from "./components/status/StatusPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/status/:userId",
+    element: (
+      <ProtectedRoute authentication={true}>
+        <StatusPage />
+      </ProtectedRoute>
+    )
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

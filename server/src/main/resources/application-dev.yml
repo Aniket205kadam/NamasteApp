@@ -64,3 +64,4 @@ application:
     uploads:
       media-output-path: ${FILE_UPLOAD_LOCATION}
       avtar-output-path: ${AVTAR_UPLOAD_LOCATION}
+      status-output-path: ${STATUS_UPLOAD_LOCATION}
