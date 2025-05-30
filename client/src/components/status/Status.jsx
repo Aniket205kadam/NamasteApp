@@ -18,9 +18,7 @@ function Status({ statues, idx }) {
   const [isMute, setIsMute] = useState(false);
   const videoRef = useRef(null);
   const navigate = useNavigate();
-
-  console.log(statues);
-
+  
   return (
     <div className="status">
       <div className="progress-bar">

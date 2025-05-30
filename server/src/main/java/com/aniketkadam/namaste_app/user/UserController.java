@@ -1,5 +1,6 @@
 package com.aniketkadam.namaste_app.user;
 
+import com.aniketkadam.namaste_app.chat.ChatResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

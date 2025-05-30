@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +61,20 @@ public class ChatService {
                         .orElseThrow(() -> new EntityNotFoundException("Chat with Id: " + chatId + " not found")),
                 ((User) connectedUser.getPrincipal()).getId()
         );
+    }
+
+    public String getChatByTwoUser(
+            @NonNull String user1Id,
+            @NonNull String user2Id
+    ) {
+        return chatRepository.findAll()
+                .stream()
+                .filter(c -> (
+                        c.getSender().getId().equals(user1Id) && c.getRecipient().getId().equals(user2Id) ||
+                                c.getSender().getId().equals(user2Id) && c.getRecipient().getId().equals(user1Id))
+                )
+                .toList()
+                .getFirst()
+                .getId();
     }
 }

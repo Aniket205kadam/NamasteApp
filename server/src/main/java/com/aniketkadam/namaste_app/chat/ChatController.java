@@ -50,4 +50,14 @@ public class ChatController {
                 .status(HttpStatus.OK)
                 .body(service.getChatById(chatId, connectedUser));
     }
+
+    @GetMapping("/u1/{user1-id}/u2/{user2-id}")
+    public ResponseEntity<String> getChatByTwoUser(
+            @PathVariable("user1-id") String user1Id,
+            @PathVariable("user2-id") String user2Id
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getChatByTwoUser(user1Id, user2Id));
+    }
 }

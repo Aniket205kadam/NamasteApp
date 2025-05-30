@@ -16,6 +16,8 @@ import { useSelector } from "react-redux";
 import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
 import useChatTimeConvertor from "../../hooks/useChatTimeConvertor";
 import Loader from "../animation/Loader";
+import chatService from "../../service/ChatService";
+import { toast } from "react-toastify";
 
 function StatusPage() {
   const { userId } = useParams();
@@ -24,6 +26,8 @@ function StatusPage() {
   const [idx, setIdx] = useState(0);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [reply, setReply] = useState("");
+  const [chatId, setChatId] = useState("");
 
   const fetchStatusByUser = async () => {
     const statusResponse = await statusService.getStatusByUser(
@@ -62,6 +66,42 @@ function StatusPage() {
     );
   };
 
+  const fetchChatId = async () => {
+    const chatResponse = await chatService.getChatIdBySenderIdAndReciverId(
+      connectedUser.id,
+      statues[idx].user.id,
+      connectedUser.authToken
+    );
+    console.log("Chat Id: ", chatResponse.response);
+    if (!chatResponse.success) {
+      console.error("Failed to fetch the chat!");
+      return;
+    }
+    console.log("Chat Id: ", chatResponse.response);
+    setChatId(chatResponse.response);
+  };
+
+  const sendReply = async () => {
+    const chatResponse = await chatService.sendMessage(
+      {
+        content: reply,
+        senderId: connectedUser.id,
+        receiverId: statues[idx].user.id,
+        type: "TEXT",
+        chatId: chatId,
+      },
+      connectedUser.authToken
+    );
+    console.log(chatResponse);
+    if (!chatResponse.success) {
+        toast.error("Failed to send reply!");
+        setReply("");
+        return;
+    }
+    setReply("");
+    toast.success("Reply sent successfully!");
+  };
+
   useEffect(() => {
     if (!loading) {
       if (!statues[idx].seen) {
@@ -73,6 +113,12 @@ function StatusPage() {
   useEffect(() => {
     fetchStatusByUser();
   }, []);
+
+  useEffect(() => {
+    if (statues) {
+        fetchChatId();
+    }
+  }, [statues]);
 
   return (
     <div className="status-page-warrper">
@@ -111,9 +157,14 @@ function StatusPage() {
             <FontAwesomeIcon icon={faFaceSmile} />
           </div>
           <div className="reply-input">
-            <input type="text" placeholder="Type a reply..." />
+            <input
+              type="text"
+              placeholder="Type a reply..."
+              value={reply}
+              onChange={(event) => setReply(event.target.value)}
+            />
           </div>
-          <div className="reply-send-btn">
+          <div className="reply-send-btn" onClick={sendReply}>
             <FontAwesomeIcon icon={faPaperPlane} />
           </div>
         </div>
