@@ -1,5 +1,7 @@
 package com.aniketkadam.namaste_app.status;
 
+import com.aniketkadam.namaste_app.user.User;
+import com.aniketkadam.namaste_app.user.UserResponse;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,11 +13,12 @@ import java.time.LocalDateTime;
 @Builder
 public class StatusResponse {
     private String id;
-    private String userId;
+    private UserResponse user;
     private String mediaUrl;
     private StatusType type;
     private String caption;
     private String text;
     private String bgColor;
     private LocalDateTime createdAt;
+    private boolean isSeen;
 }

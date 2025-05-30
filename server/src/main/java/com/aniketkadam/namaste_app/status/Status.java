@@ -26,6 +26,15 @@ import java.util.Set;
         name = StatusConstants.FIND_STATUSES_BY_USER,
         query = "SELECT status FROM Status status WHERE status.user.id = :userId"
 )
+@NamedQuery(
+        name = StatusConstants.FIND_USER_HAS_STATUS,
+        query = "SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Status s " +
+                "WHERE s.user.id = :userId AND s.expiresAt > CURRENT_TIMESTAMP"
+)
+@NamedQuery(
+        name = StatusConstants.FIND_EXPIRED_STATUS,
+        query = "SELECT status FROM Status status WHERE status.expiresAt < CURRENT_TIMESTAMP"
+)
 public class Status extends BaseAuditingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -49,6 +58,10 @@ public class Status extends BaseAuditingEntity {
     )
     @Column(name = "visible_user_id")
     private List<String> visibilityList;
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<User> viewers;
+    @ElementCollection
+    @CollectionTable(
+            name = "viewer_ids",
+            joinColumns = @JoinColumn(name = "status_id")
+    )
+    private Set<String> viewerIds;
 }

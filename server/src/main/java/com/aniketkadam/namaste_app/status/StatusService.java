@@ -9,6 +9,7 @@ import com.aniketkadam.namaste_app.file.FileService;
 import com.aniketkadam.namaste_app.file.FileUtils;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserMapper;
+import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,10 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -41,6 +39,7 @@ public class StatusService {
     private final ChatRepository chatRepository;
     private final UserMapper userMapper;
     private final StatusMapper statusMapper;
+    private final UserRepository userRepository;
 
     @Transactional
     public String createStatusWithFile(String caption, MultipartFile file, Authentication connectedUser) throws OperationNotPermittedException {
@@ -107,13 +106,43 @@ public class StatusService {
         }
     }
 
-    public List<StatusResponse> findStatusForUser(Authentication connectedUser) {
+    public List<StatusPreviewResponse> findStatusForUser(Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
+        Set<User> statusUser = new HashSet<>();
         List<Status> status = repository.findStatusesVisibleToUser(user.getId());
-        return status.stream()
-                .filter(s -> s.getExpiresAt().isAfter(LocalDateTime.now())) // here filter out the expired status
-                .map(statusMapper::toStatusResponse)
+        status.forEach(s -> {
+            statusUser.add(s.getUser());
+        });
+        List<StatusPreviewResponse> statusPreviews = statusUser.stream()
+                .map(u ->
+                        {
+                            List<Status> uStatus = repository.findStatusesByUser(u.getId());
+                            Optional<Status> latestStatus = uStatus
+                                    .stream()
+                                    .max(Comparator.comparing(Status::getCreatedDate));
+                            if (latestStatus.isEmpty()) {
+                                return null;
+                            }
+                            String preview = null;
+                            if (latestStatus.get().getType() == StatusType.IMAGE) {
+                                preview = statusMapper.toStatusResponse(latestStatus.get(), user).getMediaUrl();
+                            } else if (latestStatus.get().getType() == StatusType.VIDEO) {
+                                String targetThumbnail = fileService.generateThumbnail(latestStatus.get().getMediaUrl(), latestStatus.get().getId());
+                                preview = fileService.getEncodedImage(targetThumbnail);
+                            }
+                            boolean isSeen = uStatus.stream()
+                                    .allMatch(us -> us.getViewerIds().contains(user.getId()));
+                            return StatusPreviewResponse.builder()
+                                    .id(u.getId())
+                                    .name(u.getName())
+                                    .preview(preview)
+                                    .createdAt(latestStatus.get().getCreatedDate())
+                                    .isSeen(isSeen)
+                                    .build();
+                        }
+                )
                 .toList();
+        return statusPreviews;
     }
 
     @Transactional
@@ -134,7 +163,7 @@ public class StatusService {
         if (!isCurrentWatchStatus) {
             throw new OperationNotPermittedException("You don't have to access to watch this status!");
         }
-        status.getViewers().add(user);
+        status.getViewerIds().add(user.getId());
         repository.save(status);
     }
 
@@ -146,9 +175,13 @@ public class StatusService {
         if (!user.getId().equals(status.getUser().getId())) {
             throw new OperationNotPermittedException("You don't have the permission to watch the status viewers");
         }
-        return status.getViewers()
+        return status.getViewerIds()
                 .stream()
-                .map(userMapper::toUserResponse)
+                .map(id -> {
+                    User viewerUser = userRepository.findById(id)
+                            .orElseThrow(() -> new EntityNotFoundException("User with Id: " + id + " not found"));
+                    return userMapper.toUserResponse(viewerUser);
+                })
                 .toList();
     }
 
@@ -184,7 +217,46 @@ public class StatusService {
         List<Status> statuses = repository.findStatusesByUser(user.getId());
         return statuses.stream()
                 .filter(s -> s.getExpiresAt().isAfter(LocalDateTime.now()))
-                .map(statusMapper::toStatusResponse)
+                .map(status -> statusMapper.toStatusResponse(status, user))
+                .toList();
+    }
+
+    public Boolean connectedUserHasStatus(Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        return repository.findUserHasStatus(user.getId());
+    }
+
+    @Transactional
+    public void removeExpiredStatus() {
+        List<Status> expiredStatus = repository.findExpiredStatus();
+        expiredStatus.forEach(status -> {
+            if (status.getType() == StatusType.TEXT) {
+                repository.deleteById(status.getId());
+            } else {
+                String mediaUrl = status.getMediaUrl();
+                try {
+                    Files.delete(Paths.get(mediaUrl));
+                } catch (IOException e) {
+                    log.error("Failed to delete the status media, url: {}", mediaUrl);
+                }
+                repository.deleteById(status.getId());
+            }
+        });
+    }
+
+    public List<StatusResponse> findStatusByUser(String userId, Authentication connectedUser) throws OperationNotPermittedException {
+        User user = (User) connectedUser.getPrincipal();
+        List<Status> statues = repository.findStatusesByUser(userId);
+        // if user present in the visibility list then watch the status
+        if (statues.getFirst()
+                .getVisibilityList()
+                .stream()
+                .noneMatch(id -> id.equals(user.getId()))
+        ) {
+            throw new OperationNotPermittedException("You don't have to permission to watch this user status!");
+        }
+        return statues.stream()
+                .map(s -> statusMapper.toStatusResponse(s, user))
                 .toList();
     }
 }
