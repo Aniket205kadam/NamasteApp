@@ -59,6 +59,9 @@ function ChatWindow({ chatId, openSearch }) {
   const [isChatLoaded, setIsChatLoaded] = useState(false);
   const deletePopupRef = useRef(null);
   const messageRef = useRef();
+  const timerRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const removeTypingRef = useRef(null);
 
   useClickOutside(fileOptionsRef, () => setIsFileSelectionOptionOpen(false));
   useClickOutside(emojiRef, () => setIsDisplayEmojis(false));
@@ -242,6 +245,32 @@ function ChatWindow({ chatId, openSearch }) {
     setIsBotChat(bot.id === chat.receiverId || bot.id === chat.senderId);
   };
 
+  const sendTypingNotification = async () => {
+    const typingResponse = await chatService.sendMessageTypingNotification(
+      {
+        senderId: connectedUser.id,
+        receiverId:
+          connectedUser.id === chat.senderId ? chat.receiverId : chat.senderId,
+        chatId: chat.id,
+        typing: true,
+      },
+      connectedUser.authToken
+    );
+    if (!typingResponse.success) {
+      console.error("Failed to send the typing notification");
+      return;
+    }
+  };
+
+  const sendMessageTypingNotification = async () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+      sendTypingNotification();
+    }, 300);
+  };
+
   useEffect(() => {
     setReply(null);
     fetchChat();
@@ -308,6 +337,48 @@ function ChatWindow({ chatId, openSearch }) {
     };
   }, [chatId]);
 
+  const clearIsTyping = () => {
+    if (removeTypingRef.current) {
+      clearTimeout(removeTypingRef.current);
+    }
+    removeTypingRef.current = setTimeout(() => setIsTyping(false), 3000);
+  };
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/ws");
+    stompClient.current = Stomp.over(socket);
+
+    stompClient.current.connect(
+      {},
+      () => {
+        stompClient.current.subscribe(
+          `/users/${connectedUser.id}/message/typing`,
+          (messages) => {
+            const typingNotification = JSON.parse(messages.body);
+            if (
+              typingNotification.chatId === chatId &&
+              typingNotification.receiverId === connectedUser.id
+            ) {
+              if (!isTyping) {
+                setIsTyping(typingNotification.typing);
+                clearIsTyping();
+              }
+            }
+          }
+        );
+      },
+      (error) => {
+        console.error("Failed to connect to the server!");
+        console.error(error);
+      }
+    );
+    return () => {
+      if (stompClient.current?.connected) {
+        stompClient.current.disconnect();
+      }
+    };
+  }, [chatId]);
+
   useEffect(() => {
     if (messageRef.current) {
       messageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -332,7 +403,7 @@ function ChatWindow({ chatId, openSearch }) {
       fetchUserById();
     }
   }, [reply]);
-  
+
   return (
     <div className="chat-window">
       {/* Select file */}
@@ -350,7 +421,9 @@ function ChatWindow({ chatId, openSearch }) {
           <div className="chat-window__info">
             <span className="chat-window__name">{chat.name}</span>
             <span className="chat-window__status">
-              {chat.recipientOnline ? (
+              {isTyping ? (
+                <span style={{ color: "#04b00f" }}>Typing...</span>
+              ) : chat.recipientOnline ? (
                 <span>online</span>
               ) : (
                 <span>offline</span>
@@ -520,7 +593,12 @@ function ChatWindow({ chatId, openSearch }) {
             placeholder="Type a message"
             className="chat-window__input-field"
             value={msg}
-            onChange={(event) => setMsg(event.target.value)}
+            onChange={(event) => {
+              setMsg(event.target.value);
+              if (msg.length > 0) {
+                sendMessageTypingNotification();
+              }
+            }}
           />
           {msg.length === 0 ? (
             <button className="send-btn">

@@ -89,4 +89,11 @@ public class MessageController {
                 .status(HttpStatus.OK)
                 .body(messageService.getTotalUnreadMessages(connectedUser));
     }
+
+    @PostMapping("/typing")
+    public void handleTyping(
+            @RequestBody TypingMessage request
+    ) {
+        messageService.handleTyping(request);
+    }
 }

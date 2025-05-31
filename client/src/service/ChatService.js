@@ -362,6 +362,39 @@ class ChatService {
       };
     }
   }
+
+  async sendMessageTypingNotification(request, token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/messages/typing`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(request)
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to fetch chat messages!",
+      };
+    }
+  }
 }
 
 export default new ChatService();

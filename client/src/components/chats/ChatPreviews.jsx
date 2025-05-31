@@ -19,6 +19,7 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
   const [loading, setLoading] = useState(true);
   const connectedUser = useSelector((state) => state.authentication);
   const stompClient = useRef(null);
+  const timerRef = useRef(null);
 
   const fetchChats = async () => {
     const chatResponse = await chatService.getMyChats(connectedUser.authToken);
@@ -75,7 +76,10 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
           `/users/${connectedUser.id}/chat`,
           (messages) => {
             const notification = JSON.parse(messages.body);
-            if (notification.type === "MESSAGE" || notification.type === "SEEN") {
+            if (
+              notification.type === "MESSAGE" ||
+              notification.type === "SEEN"
+            ) {
               fetchChatById(notification.chatId);
             }
           }
@@ -92,6 +96,57 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
       }
     };
   }, [openCreateChatPage, setCurrentChat]);
+
+  const clearTypingMessage = (chatId) => {
+    if (!timerRef.current) {
+      timerRef.current = {};
+    }
+    if (timerRef.current[chatId]) {
+      clearTimeout(timerRef.current[chatId]);
+    }
+    timerRef.current[chatId] = setTimeout(() => {
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.id === chatId ? { ...chat, typing: false } : chat
+        )
+      );
+      delete timerRef.current[chatId];
+    }, 3000);
+  };
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/ws");
+    stompClient.current = Stomp.over(socket);
+
+    stompClient.current.connect(
+      {},
+      () => {
+        stompClient.current.subscribe(
+          `/users/${connectedUser.id}/message/typing`,
+          (messages) => {
+            const typingNotification = JSON.parse(messages.body);
+            setChats((prevChats) =>
+              prevChats.map((chat) =>
+                chat.id === typingNotification.chatId
+                  ? { ...chat, typing: true }
+                  : chat
+              )
+            );
+            clearTypingMessage(typingNotification.chatId);
+          }
+        );
+      },
+      (error) => {
+        console.error("Failed to connect to the server!");
+        console.error(error);
+      }
+    );
+    return () => {
+      if (stompClient.current?.connected) {
+        stompClient.current.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <div className="chat-previews">

@@ -264,4 +264,8 @@ public class MessageService {
         return messageRepository.findTotalUnreadMessages(user.getId(), MessageState.SENT)
                 .size();
     }
+
+    public void handleTyping(TypingMessage request) {
+        notificationService.sendTypingMessage(request.getReceiverId(), request);
+    }
 }

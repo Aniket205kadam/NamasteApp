@@ -1,6 +1,7 @@
 package com.aniketkadam.namaste_app.notification;
 
 import com.aniketkadam.namaste_app.message.MessageResponse;
+import com.aniketkadam.namaste_app.message.TypingMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -19,5 +20,14 @@ public class NotificationService {
                 "/chat",
                 notification
         );
+    }
+
+    public void sendTypingMessage(String userId, TypingMessage message) {
+        messagingTemplate.convertAndSendToUser(
+                userId,
+                "/message/typing",
+                message
+        );
+
     }
 }

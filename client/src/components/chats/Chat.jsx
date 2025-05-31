@@ -16,7 +16,11 @@ function Chat({ chat, setCurrentChat }) {
         </div>
         <div className="info-msg">
           <div className="last-msg">
-            <span>{chat.lastMessage}</span>
+            {chat?.typing ? (
+              <span style={{ color: "#04b00f" }}>Typing...</span>
+            ) : (
+              <span>{chat.lastMessage}</span>
+            )}
           </div>
           <div className="last-msg-time">
             <span>{useNotificationTimeConvertor(chat.lastMessageTime)}</span>
