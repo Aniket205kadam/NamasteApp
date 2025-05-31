@@ -222,7 +222,6 @@ function ChatWindow({ chatId, openSearch }) {
       toast.error("Failed to delete the message");
       return;
     }
-    console.log("Delete: ", messageResponse.response);
     setShowDelete(false);
     setMessages((prev) =>
       prev.map((msg) =>
@@ -333,7 +332,7 @@ function ChatWindow({ chatId, openSearch }) {
       fetchUserById();
     }
   }, [reply]);
-
+  
   return (
     <div className="chat-window">
       {/* Select file */}

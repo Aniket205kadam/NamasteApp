@@ -2,7 +2,6 @@ package com.aniketkadam.namaste_app.user;
 
 import com.aniketkadam.namaste_app.chat.Chat;
 import com.aniketkadam.namaste_app.common.BaseAuditingEntity;
-import com.aniketkadam.namaste_app.status.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -13,7 +12,6 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -73,7 +71,7 @@ public class User extends BaseAuditingEntity implements UserDetails, Principal {
 
     @Transient
     public boolean isUserOnline() {
-        return lastname != null && lastSeen.isAfter(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
+        return lastSeen != null && lastSeen.isAfter(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
     }
 
     @Override

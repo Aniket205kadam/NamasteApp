@@ -30,7 +30,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .lastSeen(user.getLastSeen())
                 .avtar(avtar)
-                // .isOnline(user.isUserOnline()) //todo -> solve later
+                .isOnline(user.isUserOnline())
                 .about(user.getAbout())
                 .build();
     }
