@@ -60,6 +60,9 @@ application:
     jwt:
       expiration: 259200000
       secret-key: ${SERVER_SECRET}
+    AES:
+      secret-key: ${AES_SECRET_KEY}
+
   file:
     uploads:
       media-output-path: ${FILE_UPLOAD_LOCATION}

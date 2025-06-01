@@ -10,7 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -24,7 +29,7 @@ public class MessageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<MessageResponse> saveMessage(
             @RequestBody MessageRequest request
-    ) {
+    ) throws Exception {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(messageService.saveMessage(request));

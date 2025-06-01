@@ -1,5 +1,6 @@
 package com.aniketkadam.namaste_app.message;
 
+import com.aniketkadam.namaste_app.AES.AESService;
 import com.aniketkadam.namaste_app.ai.AIService;
 import com.aniketkadam.namaste_app.chat.Chat;
 import com.aniketkadam.namaste_app.chat.ChatRepository;
@@ -20,9 +21,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -35,9 +41,10 @@ public class MessageService {
     private final FileService fileService;
     private final MessageMapper mapper;
     private final AIService aiService;
+    private final AESService aesService;
 
     @Transactional
-    public MessageResponse saveMessage(MessageRequest request) {
+    public MessageResponse saveMessage(MessageRequest request) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Chat chat = chatRepository.findById(request.getChatId())
                 .orElseThrow(() -> new EntityNotFoundException("Chat with Id: " + request.getChatId() + " not found"));
 
@@ -45,7 +52,7 @@ public class MessageService {
 
         if (aiService.sendMessageForBot(request)) {
             Message message = Message.builder()
-                    .content(request.getContent())
+                    .content(aesService.encrypt(request.getContent()))
                     .chat(chat)
                     .senderId(request.getSenderId())
                     .receiverId(request.getReceiverId())
@@ -62,7 +69,7 @@ public class MessageService {
             aiService.generateResponseFromAI(request, savedMessage);
         } else {
             Message message = Message.builder()
-                    .content(request.getContent())
+                    .content(aesService.encrypt(request.getContent()))
                     .chat(chat)
                     .senderId(request.getSenderId())
                     .receiverId(request.getReceiverId())
