@@ -45,7 +45,7 @@ Real-Time Messaging
 - Auto correct message (enhance messages)
 
 ### Author
-Aniket Kadam
-Java Student
-Maharashtra, India
+Aniket Kadam |
+Java Student |
+Maharashtra, India |
 aniketrkadam@gmail.com
