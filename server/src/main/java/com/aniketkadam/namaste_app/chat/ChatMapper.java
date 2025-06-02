@@ -13,12 +13,18 @@ public class ChatMapper {
 
     public ChatResponse toChatResponse(Chat chat, String senderId) {
         try {
+            String lastMessage = null;
+            if (chat.getLastMessage() != null) {
+                lastMessage = chat.getLastMessage().startsWith("Attachment")
+                        ? chat.getLastMessage()
+                        : aesService.decrypt(chat.getLastMessage());
+            }
             return ChatResponse.builder()
                     .id(chat.getId())
                     .name(chat.getChatName(senderId))
                     .avtar(mapper.toUserResponse(chat.getTargetUser(senderId)).getAvtar())
                     .unreadCount(chat.getUnreadMessages(senderId))
-                    .lastMessage(chat.getLastMessage().startsWith("Attachment") ? chat.getLastMessage() : aesService.decrypt(chat.getLastMessage()))
+                    .lastMessage(lastMessage)
                     .lastMessageTime(chat.getLastMessageTime())
                     .isRecipientOnline(chat.getRecipient().isUserOnline())
                     .senderId(chat.getSender().getId())

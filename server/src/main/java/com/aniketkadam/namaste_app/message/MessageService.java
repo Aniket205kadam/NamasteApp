@@ -69,7 +69,7 @@ public class MessageService {
             aiService.generateResponseFromAI(request, savedMessage);
         } else {
             Message message = Message.builder()
-                    .content(aesService.encrypt(request.getContent()))
+                    .content(request.getContent() != null ? aesService.encrypt(request.getContent()) : null)
                     .chat(chat)
                     .senderId(request.getSenderId())
                     .receiverId(request.getReceiverId())

@@ -1,5 +1,6 @@
 package com.aniketkadam.namaste_app.ai;
 
+import com.aniketkadam.namaste_app.AES.AESService;
 import com.aniketkadam.namaste_app.chat.Chat;
 import com.aniketkadam.namaste_app.chat.ChatRepository;
 import com.aniketkadam.namaste_app.message.*;
@@ -12,6 +13,8 @@ import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AbstractMessage;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -22,6 +25,11 @@ import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AIService {
+    private static final Logger log = LoggerFactory.getLogger(AIService.class);
     private final UserRepository userRepository;
     private final UserMapper mapper;
     private final ChatRepository chatRepository;
@@ -36,6 +45,7 @@ public class AIService {
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
     private final NotificationService notificationService;
+    private final AESService aesService;
 
     public UserResponse findAIBot() {
         final String sub = System.getenv("AI_BOT_ID");
@@ -104,8 +114,14 @@ public class AIService {
         } while (botResponse.getResult().getOutput().getText().isEmpty() && count < 5);
 
         // save the bot response db
+        String content = null;
+        try {
+            content = aesService.encrypt(botResponse.getResult().getOutput().getText());
+        } catch (Exception e) {
+            log.error("Failed encrypt the message");
+        }
         Message message = Message.builder()
-                .content(botResponse.getResult().getOutput().getText())
+                .content(content)
                 .chat(chat)
                 .senderId(bot.getId())
                 .receiverId(request.getSenderId())
