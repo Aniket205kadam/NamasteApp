@@ -294,14 +294,9 @@ function ChatWindow({ chatId, openSearch }) {
           `/users/${connectedUser.id}/chat`,
           (messages) => {
             const notification = JSON.parse(messages.body);
+            console.log("Notification: ", notification);
             if (notification.type === "MESSAGE") {
               const newMsg = notification.message;
-              // make change here
-              // if (messages.some((msg) => msg.id === newMsg.id)) {
-              //   setMessages((prev) =>
-              //     prev.map((msg) => (msg.id === newMsg.id ? newMsg : msg))
-              //   );
-              // } else {
               setMessages((prev) => [
                 ...new Set([
                   ...prev,
@@ -324,31 +319,8 @@ function ChatWindow({ chatId, openSearch }) {
             }
           }
         );
-      },
-      (error) => {
-        toast.error("Failed to connect to the server!");
-        console.log("Websocker error:", error);
-      }
-    );
-    return () => {
-      if (stompClient.current?.connected) {
-        stompClient.current.disconnect();
-      }
-    };
-  }, [chatId]);
 
-  const clearIsTyping = () => {
-    if (removeTypingRef.current) {
-      clearTimeout(removeTypingRef.current);
-    }
-    removeTypingRef.current = setTimeout(() => setIsTyping(false), 3000);
-  };
-
-  useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws");
-    stompClient.current = Stomp.over(socket);
-
-    stompClient.current.connect(
+        stompClient.current.connect(
       {},
       () => {
         stompClient.current.subscribe(
@@ -372,12 +344,60 @@ function ChatWindow({ chatId, openSearch }) {
         console.error(error);
       }
     );
+      },
+      (error) => {
+        toast.error("Failed to connect to the server!");
+        console.log("Websocker error:", error);
+      }
+    );
     return () => {
       if (stompClient.current?.connected) {
         stompClient.current.disconnect();
       }
     };
   }, [chatId]);
+
+  const clearIsTyping = () => {
+    if (removeTypingRef.current) {
+      clearTimeout(removeTypingRef.current);
+    }
+    removeTypingRef.current = setTimeout(() => setIsTyping(false), 3000);
+  };
+
+  // useEffect(() => {
+  //   const socket = new SockJS("http://localhost:8080/ws");
+  //   stompClient.current = Stomp.over(socket);
+
+  //   stompClient.current.connect(
+  //     {},
+  //     () => {
+  //       stompClient.current.subscribe(
+  //         `/users/${connectedUser.id}/message/typing`,
+  //         (messages) => {
+  //           const typingNotification = JSON.parse(messages.body);
+  //           if (
+  //             typingNotification.chatId === chatId &&
+  //             typingNotification.receiverId === connectedUser.id
+  //           ) {
+  //             if (!isTyping) {
+  //               setIsTyping(typingNotification.typing);
+  //               clearIsTyping();
+  //             }
+  //           }
+  //         }
+  //       );
+  //     },
+  //     (error) => {
+  //       console.error("Failed to connect to the server!");
+  //       console.error(error);
+  //     }
+  //   );
+  //   return () => {
+  //     if (stompClient.current?.connected) {
+  //       stompClient.current.disconnect();
+  //     }
+  //   };
+  // }, [chatId]);
 
   useEffect(() => {
     if (messageRef.current) {

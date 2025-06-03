@@ -84,6 +84,21 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
             }
           }
         );
+
+        stompClient.current.subscribe(
+          `/users/${connectedUser.id}/message/typing`,
+          (messages) => {
+            const typingNotification = JSON.parse(messages.body);
+            setChats((prevChats) =>
+              prevChats.map((chat) =>
+                chat.id === typingNotification.chatId
+                  ? { ...chat, typing: true }
+                  : chat
+              )
+            );
+            clearTypingMessage(typingNotification.chatId);
+          }
+        );
       },
       (error) => {
         toast.error("Failed to connect to the server!");
@@ -113,40 +128,6 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
       delete timerRef.current[chatId];
     }, 3000);
   };
-
-  useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws");
-    stompClient.current = Stomp.over(socket);
-
-    stompClient.current.connect(
-      {},
-      () => {
-        stompClient.current.subscribe(
-          `/users/${connectedUser.id}/message/typing`,
-          (messages) => {
-            const typingNotification = JSON.parse(messages.body);
-            setChats((prevChats) =>
-              prevChats.map((chat) =>
-                chat.id === typingNotification.chatId
-                  ? { ...chat, typing: true }
-                  : chat
-              )
-            );
-            clearTypingMessage(typingNotification.chatId);
-          }
-        );
-      },
-      (error) => {
-        console.error("Failed to connect to the server!");
-        console.error(error);
-      }
-    );
-    return () => {
-      if (stompClient.current?.connected) {
-        stompClient.current.disconnect();
-      }
-    };
-  }, []);
 
   return (
     <div className="chat-previews">
