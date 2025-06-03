@@ -1,6 +1,7 @@
 import {
   faArrowRight,
   faArrowRightArrowLeft,
+  faBolt,
   faCamera,
   faEllipsisVertical,
   faFile,
@@ -62,6 +63,8 @@ function ChatWindow({ chatId, openSearch }) {
   const timerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const removeTypingRef = useRef(null);
+  const [enhanceLoading, setEnhanceLoading] = useState(false);
+  const [highlightMsg, setHighlightMsg] = useState(false);
 
   useClickOutside(fileOptionsRef, () => setIsFileSelectionOptionOpen(false));
   useClickOutside(emojiRef, () => setIsDisplayEmojis(false));
@@ -271,6 +274,33 @@ function ChatWindow({ chatId, openSearch }) {
     }, 300);
   };
 
+  const handleEnhanceMessage = async () => {
+    setEnhanceLoading(true);
+    const messageResponse = await chatService.enhanceMessage(
+      msg,
+      connectedUser.authToken
+    );
+    if (!messageResponse.success) {
+      console.error("Failed to enhance the message!");
+      return;
+    }
+    setMsg(messageResponse.response);
+    setEnhanceLoading(false);
+    setHighlightMsg(true);
+  };
+
+  useEffect(() => {
+    if (!highlightMsg) return;
+
+    const highlightTimer = setTimeout(() => {
+      setHighlightMsg(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(highlightTimer);
+    };
+  }, [highlightMsg]);
+
   useEffect(() => {
     setReply(null);
     fetchChat();
@@ -321,29 +351,29 @@ function ChatWindow({ chatId, openSearch }) {
         );
 
         stompClient.current.connect(
-      {},
-      () => {
-        stompClient.current.subscribe(
-          `/users/${connectedUser.id}/message/typing`,
-          (messages) => {
-            const typingNotification = JSON.parse(messages.body);
-            if (
-              typingNotification.chatId === chatId &&
-              typingNotification.receiverId === connectedUser.id
-            ) {
-              if (!isTyping) {
-                setIsTyping(typingNotification.typing);
-                clearIsTyping();
+          {},
+          () => {
+            stompClient.current.subscribe(
+              `/users/${connectedUser.id}/message/typing`,
+              (messages) => {
+                const typingNotification = JSON.parse(messages.body);
+                if (
+                  typingNotification.chatId === chatId &&
+                  typingNotification.receiverId === connectedUser.id
+                ) {
+                  if (!isTyping) {
+                    setIsTyping(typingNotification.typing);
+                    clearIsTyping();
+                  }
+                }
               }
-            }
+            );
+          },
+          (error) => {
+            console.error("Failed to connect to the server!");
+            console.error(error);
           }
         );
-      },
-      (error) => {
-        console.error("Failed to connect to the server!");
-        console.error(error);
-      }
-    );
       },
       (error) => {
         toast.error("Failed to connect to the server!");
@@ -363,41 +393,6 @@ function ChatWindow({ chatId, openSearch }) {
     }
     removeTypingRef.current = setTimeout(() => setIsTyping(false), 3000);
   };
-
-  // useEffect(() => {
-  //   const socket = new SockJS("http://localhost:8080/ws");
-  //   stompClient.current = Stomp.over(socket);
-
-  //   stompClient.current.connect(
-  //     {},
-  //     () => {
-  //       stompClient.current.subscribe(
-  //         `/users/${connectedUser.id}/message/typing`,
-  //         (messages) => {
-  //           const typingNotification = JSON.parse(messages.body);
-  //           if (
-  //             typingNotification.chatId === chatId &&
-  //             typingNotification.receiverId === connectedUser.id
-  //           ) {
-  //             if (!isTyping) {
-  //               setIsTyping(typingNotification.typing);
-  //               clearIsTyping();
-  //             }
-  //           }
-  //         }
-  //       );
-  //     },
-  //     (error) => {
-  //       console.error("Failed to connect to the server!");
-  //       console.error(error);
-  //     }
-  //   );
-  //   return () => {
-  //     if (stompClient.current?.connected) {
-  //       stompClient.current.disconnect();
-  //     }
-  //   };
-  // }, [chatId]);
 
   useEffect(() => {
     if (messageRef.current) {
@@ -478,6 +473,16 @@ function ChatWindow({ chatId, openSearch }) {
         )}
         {showActions && (
           <ChatActions position={actionPosition} ref={chatActionsRef} />
+        )}
+        {msg.length > 0 && (
+          <div
+            className={`enhance-btn ${
+              enhanceLoading ? "enhance-loading" : ""
+            } ${highlightMsg ? "enhanced-highlight" : ""}`}
+            onClick={handleEnhanceMessage}
+          >
+            <FontAwesomeIcon icon={faBolt} />
+          </div>
         )}
         {messages.map((message, idx) => (
           <div className="_messages" key={message.id}>
@@ -611,8 +616,9 @@ function ChatWindow({ chatId, openSearch }) {
           <input
             type="text"
             placeholder="Type a message"
-            className="chat-window__input-field"
+            className={`chat-window__input-field ${highlightMsg ? "highlight" : ""}`}
             value={msg}
+            style={highlightMsg ? {backgroundColor: "#00a884"} : {}}
             onChange={(event) => {
               setMsg(event.target.value);
               if (msg.length > 0) {

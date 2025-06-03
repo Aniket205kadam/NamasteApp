@@ -22,6 +22,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,41 @@ public class AIService {
         User user = userRepository.findBySub(sub)
                 .orElseThrow(() -> new EntityNotFoundException("AI Bot not found"));
         return mapper.toUserResponse(user);
+    }
+
+    public String enhanceMessage(@NonNull String message) {
+        String contents = String.format(
+                """
+                You are a message-correcting assistant in a chat app like WhatsApp.
+            
+                Your job is to:
+                - Correct only grammar and spelling.
+                - Do not change the user's intent or meaning.
+                - Keep it natural and short like a normal chat.
+                - Keep or add emojis naturally if used.
+                
+                ⚠️ Return ONLY the corrected message, and NOTHING else. No explanation, no greetings, no "here is", no formatting. Just the message text.
+            
+                Example:
+                Input: i has laptop 😊
+                Output: I have the laptop 😊
+            
+                Now correct this:
+                %s
+                """,
+                message
+        );
+
+        Prompt prompt = new Prompt(contents);
+        int count = 0;
+        ChatResponse botResponse = null;
+        do {
+            botResponse = chatModel.call(prompt);
+            count++;
+        } while (botResponse.getResult().getOutput().getText().isEmpty() && count < 5);
+        return botResponse.getResult()
+                .getOutput()
+                .getText();
     }
 
     @Async

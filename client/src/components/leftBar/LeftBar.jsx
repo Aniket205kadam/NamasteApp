@@ -16,6 +16,7 @@ function LeftBar({
   openStatusPreviews,
   clickedLocation,
   setCurrentOpenChatId,
+  openSetting
 }) {
   const connectedUser = useSelector((state) => state.authentication);
   const [notification, setNotification] = useState(0);
@@ -79,7 +80,7 @@ function LeftBar({
               notification.senderId === connectedUser.id &&
               notification.type === "SEEN"
             ) {
-              setNotification(0);
+              fetchAllNotificationCount();
             }
           }
         );
@@ -185,6 +186,7 @@ function LeftBar({
               className={`item ${
                 clickedLocation === "SETTINGS" ? "clicked" : ""
               }`}
+              onClick={openSetting}
             >
               <FontAwesomeIcon icon={faGear} />
             </div>

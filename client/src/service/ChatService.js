@@ -395,6 +395,39 @@ class ChatService {
       };
     }
   }
+
+  async enhanceMessage(message, token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/ai/enhance/message?message=${message}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+        response: await response.text()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to fetch chat messages!",
+      };
+    }
+  }
 }
 
 export default new ChatService();

@@ -1,0 +1,131 @@
+.setting-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.setting-heading {
+  padding: 20px 16px;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.search-setting {
+  padding: 8px 12px;
+}
+
+.setting-input {
+  display: flex;
+  align-items: center;
+  background-color: #e5e6e7;
+  border-radius: 18px;
+  padding: 5px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.setting-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: transparent;
+}
+
+.search-icon {
+  color: #8696a0;
+  font-size: 14px;
+  left: 10px;
+}
+
+.remove-setting-search {
+  cursor: pointer;
+  color: #8696a0;
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* User Profile */
+.setting-connected-user {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: white;
+  border-bottom: 1px solid #e9edef;
+}
+
+.setting-user-profile {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.setting-user-profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.setting-user-info {
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: 500;
+  color: #111b21;
+}
+
+.about {
+  font-size: 14px;
+  color: #667781;
+  margin-top: 4px;
+}
+
+/* Setting Options */
+.setting-options {
+  flex: 1;
+  background-color: white;
+  margin-top: 8px;
+  overflow-y: auto;
+}
+
+.setting-option {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.setting-option:hover {
+  background-color: #f5f6f6;
+}
+
+.setting-option-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24px;
+  color: #8696a0;
+}
+
+.setting-option-text {
+  font-size: 16px;
+  color: #111b21;
+}
+
+.setting-option.logout .setting-option-icon,
+.setting-option.logout .setting-option-text {
+  color: #e74c3c;
+}

@@ -9,6 +9,7 @@ import CreateChat from "./components/chats/CreateChat";
 import { useEffect, useState } from "react";
 import Search from "./components/search/Search";
 import Profile from "./components/profile/Profile";
+import Settings from "./components/setting/settings";
 
 function App() {
   const [isChatPreviews, setIsChatPreviews] = useState(true);
@@ -18,6 +19,7 @@ function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
 
   const getLocation = () => {
     if (isChatPreviews) {
@@ -33,7 +35,7 @@ function App() {
     }
   };
 
- // close chatWindow when click Esc btn
+  // close chatWindow when click Esc btn
   useEffect(() => {
     const handleEscBtn = (event) => {
       if (event.key === "Escape") {
@@ -54,18 +56,28 @@ function App() {
           setCurrentOpenChatId={setCurrentOpenChatId}
           openProfile={() => {
             setIsChatPreviews(false);
+            setIsSettingOpen(false);
             setIsCreateChatOpen(false);
             setIsStatusPreviews(false);
             setIsProfileOpen(true);
           }}
           openChatPreviews={() => {
             setIsCreateChatOpen(false);
+            setIsSettingOpen(false);
             setIsStatusPreviews(false);
             setIsProfileOpen(false);
             setIsChatPreviews(true);
           }}
+          openSetting={() => {
+            setIsCreateChatOpen(false);
+            setIsProfileOpen(false);
+            setIsChatPreviews(false);
+            setIsStatusPreviews(false);
+            setIsSettingOpen(true);
+          }}
           openStatusPreviews={() => {
             setIsCreateChatOpen(false);
+            setIsSettingOpen(false);
             setIsProfileOpen(false);
             setIsChatPreviews(false);
             setIsStatusPreviews(true);
@@ -99,6 +111,8 @@ function App() {
         {isProfileOpen && <Profile />}
 
         {isStatusPreviews && <StatusPreviews />}
+
+        {isSettingOpen && <Settings />}
       </div>
 
       {/* <div className="chat-previews-section">
