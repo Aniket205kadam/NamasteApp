@@ -20,6 +20,9 @@ Real-Time Messaging
 🔹 Conversational AI Integration
 → Built-in AI assistant powered by Spring AI and Ollama for chatbot-style replies.
 
+🔹Enhance messages using AI
+-> Build-in feature where by just one-clicked improve the message using AI
+
 🔹 Containerized Deployment
 → Docker-ready for easy deployment and scalability.
 
@@ -32,6 +35,7 @@ Real-Time Messaging
 ![Chat UI](./img/status-preview.png)
 ![Chat UI](./img/status.png)
 ![Chat UI](./img/typing.png)
+![Chat UI](./img/enhance-messages.png)
 
 ##  AI Assistant (Spring AI + Ollama)
 - Uses Spring AI integration to connect with Ollama LLM.
