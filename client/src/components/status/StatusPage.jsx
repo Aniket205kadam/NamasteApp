@@ -12,12 +12,13 @@ import Status from "./Status";
 import "../../styles/StatusPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import statusService from "../../service/StatusService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
 import useChatTimeConvertor from "../../hooks/useChatTimeConvertor";
 import Loader from "../animation/Loader";
 import chatService from "../../service/ChatService";
 import { toast } from "react-toastify";
+import { logout } from "../../store/authSlice";
 
 function StatusPage() {
   const { userId } = useParams();
@@ -28,6 +29,7 @@ function StatusPage() {
   const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState("");
   const [chatId, setChatId] = useState("");
+  const dispatch = useDispatch();
 
   const fetchStatusByUser = async () => {
     const statusResponse = await statusService.getStatusByUser(
@@ -36,6 +38,9 @@ function StatusPage() {
     );
     if (!statusResponse.success) {
       console.error("Failed to load the status of user, user ID: ", userId);
+      if (statusResponse.status === 403 || statusResponse.status === 401) {
+        dispatch(logout());
+      }
       navigate("/c");
     }
     setStatues(
@@ -56,6 +61,9 @@ function StatusPage() {
     );
     if (!statusResponse.success) {
       console.error("Failed to view the status, status Id: ", statusId);
+      if (statusResponse.status === 403 || statusResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     console.log("Seen response: ", statusResponse);
@@ -72,9 +80,11 @@ function StatusPage() {
       statues[idx].user.id,
       connectedUser.authToken
     );
-    console.log("Chat Id: ", chatResponse.response);
     if (!chatResponse.success) {
       console.error("Failed to fetch the chat!");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     console.log("Chat Id: ", chatResponse.response);
@@ -94,9 +104,12 @@ function StatusPage() {
     );
     console.log(chatResponse);
     if (!chatResponse.success) {
-        toast.error("Failed to send reply!");
-        setReply("");
-        return;
+      toast.error("Failed to send reply!");
+      setReply("");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
+      return;
     }
     setReply("");
     toast.success("Reply sent successfully!");
@@ -116,7 +129,7 @@ function StatusPage() {
 
   useEffect(() => {
     if (statues) {
-        fetchChatId();
+      fetchChatId();
     }
   }, [statues]);
 

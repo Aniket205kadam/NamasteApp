@@ -12,6 +12,12 @@ class AIService {
           Accept: "application/json",
         },
       });
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {

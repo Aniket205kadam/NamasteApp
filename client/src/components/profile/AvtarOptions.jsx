@@ -11,7 +11,7 @@ import { useDropzone } from "react-dropzone";
 import UserService from "../../service/UserService";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { login } from "../../store/authSlice";
+import { login, logout } from "../../store/authSlice";
 
 function AvtarOptions({ position, ref, close, setIsShowRemoveProfile }) {
   const connectedUser = useSelector((state) => state.authentication);
@@ -35,6 +35,9 @@ function AvtarOptions({ position, ref, close, setIsShowRemoveProfile }) {
     );
     if (!avtarResponse.success) {
       toast.error("Failed to upload the profile image");
+      if (avtarResponse.status === 403 || avtarResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     const updatedUser = avtarResponse.response;

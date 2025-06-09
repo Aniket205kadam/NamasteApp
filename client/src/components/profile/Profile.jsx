@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import UserService from "../../service/UserService";
 import { toast } from "react-toastify";
 import AvtarOptions from "./AvtarOptions";
-import { login } from "../../store/authSlice";
+import { login, logout } from "../../store/authSlice";
 import RemoveProfilePopup from "./RemoveProfilePopup";
 
 function Profile() {
@@ -51,6 +51,9 @@ function Profile() {
     );
     if (!updateResponse.success) {
       toast.error("Failed to update");
+      if (updateResponse.status === 403 || updateResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setName({ value: name.value, isEditable: false });
@@ -74,6 +77,9 @@ function Profile() {
     );
     if (!userResponse.success) {
       toast.error("Failed to load the user");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setName({

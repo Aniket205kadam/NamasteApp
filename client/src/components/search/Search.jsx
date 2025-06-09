@@ -8,10 +8,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import chatService from "../../service/ChatService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "../../styles/Search.css";
 import useChatTimeConvertor from "../../hooks/useChatTimeConvertor";
+import { logout } from "../../store/authSlice";
 
 function Search({ chatId, onClose }) {
   const [originalMessages, setOriginalMessages] = useState([]);
@@ -19,6 +20,7 @@ function Search({ chatId, onClose }) {
   const connectedUser = useSelector((state) => state.authentication);
   const [query, setQuery] = useState("");
   const [name, setName] = useState("");
+  const dispatch = useDispatch();
 
   const fetchMessages = async () => {
     const messageResponse = await chatService.findMessages(
@@ -27,6 +29,9 @@ function Search({ chatId, onClose }) {
     );
     if (!messageResponse.success) {
       toast.error("Failed to fetch the messages");
+      if (messageResponse.status === 403 || messageResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setOriginalMessages(messageResponse.response);
@@ -40,6 +45,9 @@ function Search({ chatId, onClose }) {
     );
     if (!chatResponse.success) {
       toast.error("Failed to fetch the chat with Id: " + chatId);
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setName(chatResponse.response.name);

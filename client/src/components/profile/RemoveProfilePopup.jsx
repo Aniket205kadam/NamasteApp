@@ -3,7 +3,7 @@ import "../../styles/RemoveProfilePopup.css";
 import { useDispatch, useSelector } from "react-redux";
 import UserService from "../../service/UserService";
 import { toast } from "react-toastify";
-import { login } from "../../store/authSlice";
+import { login, logout } from "../../store/authSlice";
 
 function RemoveProfilePopup({ close, removeProfileRef }) {
   const connectedUser = useSelector((state) => state.authentication);
@@ -16,6 +16,9 @@ function RemoveProfilePopup({ close, removeProfileRef }) {
     if (!avtarResponse.success) {
         console.error(avtarResponse.error);
       toast.error("Failed to remove the avtar");
+      if (avtarResponse.status === 403 || avtarResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     dispatch(

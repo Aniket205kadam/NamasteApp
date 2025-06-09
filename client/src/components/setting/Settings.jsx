@@ -27,6 +27,9 @@ function Settings() {
     );
     if (!userResponse.success) {
       console.error("Failed to fetch the user!");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setUser(userResponse.response);

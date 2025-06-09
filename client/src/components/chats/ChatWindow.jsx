@@ -17,7 +17,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import "../../styles/ChatWindow.css";
 import chatService from "../../service/ChatService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NoProfile from "../../assets/no-profile.png";
 import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
@@ -33,6 +33,7 @@ import GIFLogo from "./GIFLogo";
 import ChatActions from "./ChatActions";
 import DeletePopup from "./DeletePopup";
 import AIService from "../../service/AIService";
+import { logout } from "../../store/authSlice";
 
 function ChatWindow({ chatId, openSearch }) {
   const [chat, setChat] = useState({ name: "NamasteApp User" });
@@ -65,6 +66,7 @@ function ChatWindow({ chatId, openSearch }) {
   const removeTypingRef = useRef(null);
   const [enhanceLoading, setEnhanceLoading] = useState(false);
   const [highlightMsg, setHighlightMsg] = useState(false);
+  const dispatch = useDispatch();
 
   useClickOutside(fileOptionsRef, () => setIsFileSelectionOptionOpen(false));
   useClickOutside(emojiRef, () => setIsDisplayEmojis(false));
@@ -78,6 +80,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!chatResponse.success) {
       toast.error("Failed to fetch the chat!");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setChat(chatResponse.response);
@@ -91,6 +96,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!messageResponse.success) {
       toast.error("Failed to fetch chat messages");
+      if (messageResponse.status === 403 || messageResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setMessages(messageResponse.response);
@@ -134,6 +142,9 @@ function ChatWindow({ chatId, openSearch }) {
     }
     if (!chatResponse.success) {
       toast.error("Failed to send the message!");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setMessages((prev) => [...prev, chatResponse.response]);
@@ -151,6 +162,9 @@ function ChatWindow({ chatId, openSearch }) {
       toast.error("Failed to seen the messages");
       // reload the page
       window.location.reload();
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
   };
@@ -164,6 +178,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!fileResponse.success) {
       toast.error("Failed to upload the file");
+      if (fileResponse.status === 403 || fileResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setMessages((prev) => [...prev, fileResponse.response]);
@@ -188,6 +205,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!chatResponse.success) {
       toast.error("Failed to send the message!");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setMessages((prev) => [...prev, chatResponse.response]);
@@ -201,6 +221,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!userResponse.success) {
       toast.error("Failed to fetch the user");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setReplyMsgSender(userResponse.response);
@@ -226,6 +249,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!messageResponse.success) {
       toast.error("Failed to delete the message");
+      if (messageResponse.status === 403 || messageResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setShowDelete(false);
@@ -242,6 +268,9 @@ function ChatWindow({ chatId, openSearch }) {
     const botResponse = await AIService.getAIBot(connectedUser.authToken);
     if (!botResponse.success) {
       console.error("Failed to load the AI Bot");
+      if (botResponse.status === 403 || botResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     const bot = botResponse.response;
@@ -261,6 +290,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!typingResponse.success) {
       console.error("Failed to send the typing notification");
+      if (typingResponse.status === 403 || typingResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
   };
@@ -282,6 +314,9 @@ function ChatWindow({ chatId, openSearch }) {
     );
     if (!messageResponse.success) {
       console.error("Failed to enhance the message!");
+      if (messageResponse.status === 403 || messageResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setMsg(messageResponse.response);
@@ -616,9 +651,11 @@ function ChatWindow({ chatId, openSearch }) {
           <input
             type="text"
             placeholder="Type a message"
-            className={`chat-window__input-field ${highlightMsg ? "highlight" : ""}`}
+            className={`chat-window__input-field ${
+              highlightMsg ? "highlight" : ""
+            }`}
             value={msg}
-            style={highlightMsg ? {backgroundColor: "#00a884"} : {}}
+            style={highlightMsg ? { backgroundColor: "#00a884" } : {}}
             onChange={(event) => {
               setMsg(event.target.value);
               if (msg.length > 0) {

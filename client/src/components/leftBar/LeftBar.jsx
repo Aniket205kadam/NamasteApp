@@ -2,13 +2,14 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import "../../styles/LeftBar.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import chatService from "../../service/ChatService";
 import { toast } from "react-toastify";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import AIService from "../../service/AIService";
 import ChatService from "../../service/ChatService";
+import { logout } from "../../store/authSlice";
 
 function LeftBar({
   openProfile,
@@ -22,6 +23,7 @@ function LeftBar({
   const [notification, setNotification] = useState(0);
   const [bot, setBot] = useState(null);
   const stompClient = useRef(null);
+  const dispatch = useDispatch();
 
   const fetchAllNotificationCount = async () => {
     const notificationResponse = await chatService.getAllNotifications(
@@ -38,6 +40,9 @@ function LeftBar({
     const botResponse = await AIService.getAIBot(connectedUser.authToken);
     if (!botResponse.success) {
       console.error("Failed to load the AI bot information");
+      if (botResponse.status === 403 || botResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setBot(botResponse.response);
@@ -47,6 +52,9 @@ function LeftBar({
     const chatResponse = await ChatService.createChats(connectedUser.id, bot.id, connectedUser.authToken);
     if (!chatResponse.success) {
       console.error("Failed to create the chat with ", bot.firstname + bot.lastname);
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setCurrentOpenChatId(chatResponse.response.response);

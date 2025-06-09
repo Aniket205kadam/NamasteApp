@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import "../../styles/StatusPreviews.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import StatusOptions from "./StatusOptions";
 import useClickOutside from "../../hooks/useClickOutside";
 import DisplayFile from "../doc/DisplayFile";
@@ -14,6 +14,7 @@ import statusService from "../../service/StatusService";
 import { toast } from "react-toastify";
 import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../store/authSlice";
 
 function StatusPreviews() {
   const connectedUser = useSelector((state) => state.authentication);
@@ -25,6 +26,7 @@ function StatusPreviews() {
   const [connectedUserHasStatus, setConnectedUserHasStatus] = useState(false);
   const [friendsStatus, setFriendsStatus] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useClickOutside(statusOptionRef, () => setShowStatusOptions(false));
 
@@ -36,6 +38,9 @@ function StatusPreviews() {
     );
     if (!statusResponse.success) {
       toast.error("Failed to upload the status, try again!");
+      if (statusResponse.status === 403 || statusResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     console.log(statusResponse);
@@ -49,26 +54,38 @@ function StatusPreviews() {
     setShowStatusOptions(false);
     setStatusFile(file);
     setIsShowStateFile(true);
-  }
+  };
 
   const fetchConnectedUserHasStatus = async () => {
-    const statusResponse = await statusService.connectedUserHasStatus(connectedUser.authToken);
+    const statusResponse = await statusService.connectedUserHasStatus(
+      connectedUser.authToken
+    );
     if (!statusResponse.success) {
       console.error("Failed to load the user details");
+      if (statusResponse.status === 403 || statusResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
-    setConnectedUserHasStatus(statusResponse.response === "true" ? true : false);
-  }
+    setConnectedUserHasStatus(
+      statusResponse.response === "true" ? true : false
+    );
+  };
 
   const fetchFriendsStatus = async () => {
-    const statusResponse = await statusService.fetchFriendsStatus(connectedUser.authToken);
+    const statusResponse = await statusService.fetchFriendsStatus(
+      connectedUser.authToken
+    );
     if (!statusResponse.success) {
       log.error("Failed to fetch the friends status!");
+      if (statusResponse.status === 403 || statusResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     console.log("Frineds status: ", statusResponse);
     setFriendsStatus(statusResponse.response);
-  }
+  };
 
   useEffect(() => {
     fetchConnectedUserHasStatus();
@@ -112,7 +129,9 @@ function StatusPreviews() {
           <img
             src={connectedUser.avtar}
             alt="My status"
-            className={`status-avatar ${connectedUserHasStatus ? "unseen-status" : ""}`}
+            className={`status-avatar ${
+              connectedUserHasStatus ? "unseen-status" : ""
+            }`}
           />
           <div className="status-add-icon">
             <FontAwesomeIcon icon={faPlus} color="#ffffff" />
@@ -126,9 +145,17 @@ function StatusPreviews() {
       {/* Recent Updates */}
       <div className="friends-status">
         <h2 className="recent-updates-title">Recent updates</h2>
-        {friendsStatus.length === 0 && <span className="status-msg">None of your friends have shared a status yet.</span>}
+        {friendsStatus.length === 0 && (
+          <span className="status-msg">
+            None of your friends have shared a status yet.
+          </span>
+        )}
         {friendsStatus.map((status) => (
-          <div className="status-item" key={status.id} onClick={() => navigate(`/status/${status.id}`)}>
+          <div
+            className="status-item"
+            key={status.id}
+            onClick={() => navigate(`/status/${status.id}`)}
+          >
             <div className="status-user-avatar">
               <div
                 className={`status-indicator ${
@@ -144,7 +171,9 @@ function StatusPreviews() {
             </div>
             <div className="status-user-info">
               <span className="status-user-name">{status.name}</span>
-              <span className="status-time">{useNotificationTimeConvertor(status.createdAt)}</span>
+              <span className="status-time">
+                {useNotificationTimeConvertor(status.createdAt)}
+              </span>
             </div>
           </div>
         ))}

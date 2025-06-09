@@ -7,16 +7,18 @@ import React, { useEffect, useState } from "react";
 import "../../styles/CreateChat.css";
 import ChatLoading from "../animation/ChatLoading";
 import userService from "../../service/UserService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NoProfile from "../../assets/no-profile.png";
 import chatService from "../../service/ChatService";
+import { logout } from "../../store/authSlice";
 
 function CreateChat({ closeCreateChatPage, setCurrentChat }) {
   const [searchedUser, setSearchedUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const connectedUser = useSelector((state) => state.authentication);
   const [query, setQuery] = useState("");
+  const dispatch = useDispatch();
 
   const fetchSuggestedUser = async () => {
     setLoading(true);
@@ -25,6 +27,9 @@ function CreateChat({ closeCreateChatPage, setCurrentChat }) {
     );
     if (!userResponse.success) {
       toast.error("Failed to fetch the users!");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setSearchedUser(userResponse.response);
@@ -39,6 +44,9 @@ function CreateChat({ closeCreateChatPage, setCurrentChat }) {
     );
     if (!userResponse.success) {
       toast.error("Failed to fetch the users!");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setSearchedUser(userResponse.response);
@@ -52,8 +60,11 @@ function CreateChat({ closeCreateChatPage, setCurrentChat }) {
       connectedUser.authToken
     );
     if (!chatResponse.success) {
-        toast.error("Failed to create new chat, try again..!");
-        return;
+      toast.error("Failed to create new chat, try again..!");
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
+      return;
     }
     setCurrentChat(chatResponse.response.response);
     closeCreateChatPage();

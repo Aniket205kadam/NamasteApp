@@ -11,12 +11,18 @@ class ChatService {
           Accept: "application/json",
         },
       });
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
-        console.info("error", response.status);
         const error = await response.json();
         return {
           success: false,
           error: error,
+          status: response.status,
         };
       }
       return {
@@ -25,7 +31,6 @@ class ChatService {
         response: await response.json(),
       };
     } catch (error) {
-      console.info("error", error);
       return {
         success: false,
         error: error.message || "Failed to fetch chats!",
@@ -47,6 +52,12 @@ class ChatService {
           Accept: "application/json",
         },
       });
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.text();
         return {
@@ -80,6 +91,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -113,6 +130,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -144,6 +167,12 @@ class ChatService {
         },
         body: JSON.stringify(request),
       });
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -177,6 +206,12 @@ class ChatService {
           Accept: "application/json",
         },
       });
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -203,14 +238,23 @@ class ChatService {
       request.append("caption", caption);
       request.append("file", file);
 
-      const response = await fetch(`${AppConfig.backendUrl}/api/v1/messages/upload-media`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-        body: request
-      });
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/messages/upload-media`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: request,
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -244,6 +288,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -277,6 +327,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -310,6 +366,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -343,6 +405,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -374,9 +442,15 @@ class ChatService {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-          body: JSON.stringify(request)
+          body: JSON.stringify(request),
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -409,6 +483,12 @@ class ChatService {
           },
         }
       );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
       if (!response.ok) {
         const error = await response.json();
         return {
@@ -419,7 +499,7 @@ class ChatService {
       return {
         success: true,
         status: response.status,
-        response: await response.text()
+        response: await response.text(),
       };
     } catch (error) {
       return {

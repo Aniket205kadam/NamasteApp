@@ -9,10 +9,11 @@ import Chat from "./Chat";
 import "../../styles/ChatPreviews.css";
 import ChatLoading from "../animation/ChatLoading";
 import chatService from "../../service/ChatService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import { logout } from "../../store/authSlice";
 
 function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
   const [chats, setChats] = useState([]);
@@ -20,6 +21,7 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
   const connectedUser = useSelector((state) => state.authentication);
   const stompClient = useRef(null);
   const timerRef = useRef(null);
+  const dispatch = useDispatch();
 
   const fetchChats = async () => {
     const chatResponse = await chatService.getMyChats(connectedUser.authToken);
@@ -27,6 +29,9 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
       toast.error(
         "Unable to load conversations. Please check your connection and try again."
       );
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setChats(
@@ -48,6 +53,9 @@ function ChatPreviews({ openCreateChatPage, setCurrentChat }) {
       toast.error("Failed to load the chat by Id: ", chatId);
       // load the page
       window.location.reload();
+      if (chatResponse.status === 403 || chatResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     const updatedChat = chatResponse.response;

@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useChatTimeConvertor from "../../hooks/useChatTimeConvertor";
 import MessageActions from "./MessageActions";
 import useClickOutside from "../../hooks/useClickOutside";
@@ -26,6 +26,7 @@ import { saveAs } from "file-saver";
 import UserService from "../../service/UserService";
 import ChatService from "../../service/ChatService";
 import GIFLogo from "./GIFLogo";
+import { logout } from "../../store/authSlice";
 
 function Message({ message, setReply, chatId, setShowDelete }) {
   const connectedUser = useSelector((state) => state.authentication);
@@ -34,6 +35,7 @@ function Message({ message, setReply, chatId, setShowDelete }) {
   const actionRef = useRef(null);
   const [parentMsg, setParentMsg] = useState(null);
   const [replyMsgSender, setReplyMsgSender] = useState(null);
+  const dispatch = useDispatch();
 
   useClickOutside(actionRef, () => setShowActions(false));
 
@@ -84,6 +86,9 @@ function Message({ message, setReply, chatId, setShowDelete }) {
     );
     if (!userResponse.success) {
       toast.error("Failed to fetch the user");
+      if (userResponse.status === 403 || userResponse.status === 401) {
+        dispatch(logout());
+      }
       return;
     }
     setReplyMsgSender(userResponse.response);
