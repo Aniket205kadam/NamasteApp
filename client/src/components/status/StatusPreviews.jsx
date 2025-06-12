@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import useNotificationTimeConvertor from "../../hooks/useNotificationTimeConvertor";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
+import TextStatus from "./TextStatus";
 
 function StatusPreviews() {
   const connectedUser = useSelector((state) => state.authentication);
@@ -25,6 +26,7 @@ function StatusPreviews() {
   const [caption, setCaption] = useState(null);
   const [connectedUserHasStatus, setConnectedUserHasStatus] = useState(false);
   const [friendsStatus, setFriendsStatus] = useState([]);
+  const [showTextStatus, setShowTextStatus] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -43,7 +45,6 @@ function StatusPreviews() {
       }
       return;
     }
-    console.log(statusResponse);
     toast.success("Status successfully uploaded!");
     setIsShowStateFile(false);
     setShowStatusOptions(false);
@@ -83,7 +84,6 @@ function StatusPreviews() {
       }
       return;
     }
-    console.log("Frineds status: ", statusResponse);
     setFriendsStatus(statusResponse.response);
   };
 
@@ -110,8 +110,15 @@ function StatusPreviews() {
         </div>
       </div>
       {showStatusOptions && (
-        <StatusOptions ref={statusOptionRef} fileSelected={fileSelected} />
+        <StatusOptions
+          ref={statusOptionRef}
+          fileSelected={fileSelected}
+          setShowTextStatus={setShowTextStatus}
+          connectedUserHasStatus={connectedUserHasStatus}
+        />
       )}
+
+      {showTextStatus && <TextStatus close={() => setShowTextStatus(false)} />}
 
       {isShowStateFile && (
         <DisplayFile

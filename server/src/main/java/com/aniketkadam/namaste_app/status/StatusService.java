@@ -79,6 +79,7 @@ public class StatusService {
     public String createStatusWithText(
             @NonNull String text,
             @NonNull String bgColor,
+            @NonNull String textStyle,
             @NonNull Authentication connectedUser
     ) {
         User user = (User) connectedUser.getPrincipal();
@@ -86,7 +87,8 @@ public class StatusService {
                 .user(user)
                 .type(StatusType.TEXT)
                 .text(text)
-                .bgColor(bgColor) // set the background color for the status when only text is present
+                .bgColor(bgColor) // set the background color
+                .textStyle(textStyle) // set the text style (font-family)
                 .expiresAt(LocalDateTime.now().plusHours(24)) // status display for 24 hours
                 .visibilityList(getStatusVisiblilityList(connectedUser))
                 .build();
@@ -248,7 +250,7 @@ public class StatusService {
         User user = (User) connectedUser.getPrincipal();
         List<Status> statues = repository.findStatusesByUser(userId);
         // if user present in the visibility list then watch the status
-        if (statues.getFirst()
+        if (!statues.getFirst().getUser().getId().equals(user.getId()) && statues.getFirst()
                 .getVisibilityList()
                 .stream()
                 .noneMatch(id -> id.equals(user.getId()))

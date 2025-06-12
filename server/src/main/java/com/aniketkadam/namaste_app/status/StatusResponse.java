@@ -19,6 +19,7 @@ public class StatusResponse {
     private String caption;
     private String text;
     private String bgColor;
+    private String textStyle;
     private LocalDateTime createdAt;
     private boolean isSeen;
 }

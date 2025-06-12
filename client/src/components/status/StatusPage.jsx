@@ -36,6 +36,7 @@ function StatusPage() {
       userId,
       connectedUser.authToken
     );
+    console.log(statusResponse);
     if (!statusResponse.success) {
       console.error("Failed to load the status of user, user ID: ", userId);
       if (statusResponse.status === 403 || statusResponse.status === 401) {
@@ -102,7 +103,6 @@ function StatusPage() {
       },
       connectedUser.authToken
     );
-    console.log(chatResponse);
     if (!chatResponse.success) {
       toast.error("Failed to send reply!");
       setReply("");
@@ -134,7 +134,7 @@ function StatusPage() {
   }, [statues]);
 
   return (
-    <div className="status-page-warrper">
+    <div className="status-page-warrper" style={{backgroundColor: statues[idx]?.bgColor}}>
       <div className="status-page">
         {idx != 0 && (
           <div

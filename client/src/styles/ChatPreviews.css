@@ -1,7 +1,8 @@
 .chat-previews {
-  background-color: #f0f2f5;
+  background-color: #ffffff;
   height: 100vh;
   display: flex;
+  padding-top: 10px;
   flex-direction: column;
 }
 

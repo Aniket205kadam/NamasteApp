@@ -39,6 +39,7 @@ public class StatusMapper {
                 .caption(status.getCaption())
                 .text(status.getText())
                 .bgColor(status.getBgColor())
+                .textStyle(status.getTextStyle())
                 .createdAt(status.getCreatedDate())
                 .isSeen(isSeen)
                 .build();

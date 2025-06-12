@@ -1,0 +1,154 @@
+/* TextStatus.css */
+
+/* Overlay covering the entire screen */
+.enter-text {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  background-color: #128C7E; /* Default WhatsApp green */
+  transition: background-color 0.3s ease;
+}
+
+/* Header styling */
+.text-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.status-close, 
+.text-emoji, 
+.text-style, 
+.color-picker {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.right-side {
+    display: flex;
+}
+
+.status-close:hover, 
+.text-emoji:hover, 
+.text-style:hover, 
+.color-picker:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Main input area */
+.text-status-input {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.text-status-input input {
+  width: 100%;
+  max-width: 80%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 42px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.text-status-input input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
+
+/* Footer with send button */
+.text-status-save {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.text-send-btn {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background-color: #25D366;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.text-send-btn:hover {
+  background-color: #128C7E;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Emoji picker styling */
+.emoji-picker-container {
+  position: absolute;
+  bottom: 90px;
+  right: 30px;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .text-status-input input {
+    font-size: 36px;
+    max-width: 90%;
+  }
+  
+  .status-close, 
+  .text-emoji, 
+  .text-style, 
+  .color-picker {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .text-send-btn {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-status-input input {
+    font-size: 30px;
+  }
+  
+  .emoji-picker-container {
+    bottom: 80px;
+    right: 20px;
+  }
+}

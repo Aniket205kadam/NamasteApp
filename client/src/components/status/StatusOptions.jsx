@@ -1,9 +1,18 @@
-import { faImages, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faImages, faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-function StatusOptions({ ref, fileSelected }) {
+function StatusOptions({
+  ref,
+  fileSelected,
+  setShowTextStatus,
+  connectedUserHasStatus,
+}) {
+  const connectedUser = useSelector(state => state.authentication);
+  const navigate = useNavigate();
   const { getInputProps, getRootProps } = useDropzone({
     accept: {
       "image/jpeg": [".jpeg", ".jpg"],
@@ -17,8 +26,6 @@ function StatusOptions({ ref, fileSelected }) {
     },
   });
 
-  const uploadPhotoOrVideo = async (file) => {};
-
   return (
     <div
       className="set-actar-container"
@@ -31,11 +38,16 @@ function StatusOptions({ ref, fileSelected }) {
       }}
     >
       <div className="avtar-options">
+        {connectedUserHasStatus && (
+          <div className="a-option" onClick={() => navigate(`/status/${connectedUser.id}`)}>
+            <FontAwesomeIcon icon={faEye} /> View status
+          </div>
+        )}
         <div className="a-option" {...getRootProps()}>
           <input {...getInputProps()} />
           <FontAwesomeIcon icon={faImages} /> Photos & videos
         </div>
-        <div className="a-option">
+        <div className="a-option" onClick={() => setShowTextStatus(true)}>
           <FontAwesomeIcon icon={faPen} /> Text
         </div>
       </div>

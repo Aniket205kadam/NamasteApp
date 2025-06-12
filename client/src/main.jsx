@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { Bounce, ToastContainer } from "react-toastify";
 import StatusPage from "./components/status/StatusPage.jsx";
+import TextStatus from "./components/status/TextStatus.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,8 +38,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/success-asuwecwoew12@1slks/:email",
-        element: <AccountVerified />
-      }
+        element: <AccountVerified />,
+      },
     ],
   },
   {
@@ -55,8 +56,8 @@ const router = createBrowserRouter([
       <ProtectedRoute authentication={true}>
         <StatusPage />
       </ProtectedRoute>
-    )
-  }
+    ),
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(

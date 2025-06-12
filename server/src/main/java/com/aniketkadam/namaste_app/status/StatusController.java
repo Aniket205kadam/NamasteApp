@@ -38,11 +38,12 @@ public class StatusController {
     public ResponseEntity<String> setStatusWithText(
             @RequestParam("text") String text,
             @RequestParam("bgColor") String bgColor,
+            @RequestParam("textStyle") String textStyle,
             Authentication connectedUser
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.createStatusWithText(text, bgColor, connectedUser));
+                .body(service.createStatusWithText(text, bgColor, textStyle, connectedUser));
     }
 
     @GetMapping

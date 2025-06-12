@@ -50,6 +50,7 @@ public class Status extends BaseAuditingEntity {
     @Column(name = "text", length = 200)
     private String text;
     private String bgColor;
+    private String textStyle;
     private LocalDateTime expiresAt;
     @ElementCollection
     @CollectionTable(
