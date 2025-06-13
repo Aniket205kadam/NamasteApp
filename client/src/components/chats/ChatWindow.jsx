@@ -35,7 +35,7 @@ import DeletePopup from "./DeletePopup";
 import AIService from "../../service/AIService";
 import { logout } from "../../store/authSlice";
 
-function ChatWindow({ chatId, openSearch }) {
+function ChatWindow({ chatId, openSearch, openContactInfo }) {
   const [chat, setChat] = useState({ name: "NamasteApp User" });
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
@@ -66,12 +66,15 @@ function ChatWindow({ chatId, openSearch }) {
   const removeTypingRef = useRef(null);
   const [enhanceLoading, setEnhanceLoading] = useState(false);
   const [highlightMsg, setHighlightMsg] = useState(false);
+  const [showChatOptions, setShowChatOptions] = useState(false);
   const dispatch = useDispatch();
+  const chatOptionsRef = useRef(null);
 
   useClickOutside(fileOptionsRef, () => setIsFileSelectionOptionOpen(false));
   useClickOutside(emojiRef, () => setIsDisplayEmojis(false));
   useClickOutside(chatActionsRef, () => setShowAction(false));
   useClickOutside(deletePopupRef, () => setShowDelete(false));
+  useClickOutside(chatOptionsRef, () => setShowChatOptions(false));
 
   const fetchChat = async () => {
     const chatResponse = await chatService.findChatById(
@@ -461,6 +464,14 @@ function ChatWindow({ chatId, openSearch }) {
         <DocumentationOption setFile={setFile} ref={fileOptionsRef} />
       )}
 
+      {showChatOptions && (
+        <ChatOptions
+          ref={chatOptionsRef}
+          openContactInfo={openContactInfo}
+          close={() => setShowChatOptions(false)}
+        />
+      )}
+
       <div className="chat-window__header">
         <div className="chat-window__profile">
           <img
@@ -488,7 +499,7 @@ function ChatWindow({ chatId, openSearch }) {
               className="chat-window__icon"
             />
           </div>
-          <div className="more-btn">
+          <div className="more-btn" onClick={() => setShowChatOptions(true)}>
             <FontAwesomeIcon
               icon={faEllipsisVertical}
               className="chat-window__icon"
@@ -717,6 +728,26 @@ const PrintTime = ({ createdAt, time, setTime, idx }) => {
   }
 
   return <span className="timestamp">{convertedTime}</span>;
+};
+
+const ChatOptions = ({ ref, openContactInfo, close }) => {
+  return (
+    <div className="chat-options" ref={ref}>
+      <div
+        className="chat-option"
+        onClick={() => {
+          openContactInfo();
+          close();
+        }}
+      >
+        Contact info
+      </div>
+      <div className="chat-option">Disappearing messages</div>
+      <div className="chat-option">Close chat</div>
+      <div className="chat-option">Clear chat</div>
+      <div className="chat-option">Delete chat</div>
+    </div>
+  );
 };
 
 export default ChatWindow;

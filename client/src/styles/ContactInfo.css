@@ -18,7 +18,7 @@
   
   .contact-info__close-btn,
   .contact-info__edit-btn {
-    color: #008069;
+    color: #333434;
     background: none;
     border: none;
     cursor: pointer;
@@ -26,9 +26,10 @@
   }
   
   .contact-info__title {
-    font-size: 18px;
-    color: #111b21;
+    font-size: 17px;
+    color: #333434;
     margin: 0;
+    padding-right: 70%;
   }
   
   /* Profile Section */
@@ -92,11 +93,10 @@
   
   .contact-info__section-title {
     font-size: 16px;
-    color: #667781;
+    color: #848585;
     margin: 0;
   }
   
-  /* Media Section */
   .contact-info__media-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -119,7 +119,6 @@
     align-items: center;
   }
   
-  /* Actions Section */
   .contact-info__actions {
     padding: 16px;
     display: flex;
@@ -136,9 +135,10 @@
     border: none;
     background: none;
     text-align: left;
-    color: #111b21;
+    color: #575858;
     cursor: pointer;
     border-radius: 8px;
+    font-size: 16px;
   }
   
   .contact-info__action-btn:hover {
@@ -149,6 +149,6 @@
     color: #d33946;
   }
   
-  .contact-info__action-btn--favourite {
+  /* .contact-info__action-btn--favourite {
     color: #e86964;
-  }
+  } */

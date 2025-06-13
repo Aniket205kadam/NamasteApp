@@ -24,4 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query(name = MessageConstants.FIND_TOTAL_UNREAD_MESSAGES)
     List<Message> findTotalUnreadMessages(@Param("userId") String userId, @Param("state") MessageState state);
+
+    @Query(name = MessageConstants.FIND_CHAT_MEDIAS)
+    List<Message> findChatMedias(@Param("chatId") String chatId, @Param("image") MessageType image, @Param("video") MessageType video);
 }

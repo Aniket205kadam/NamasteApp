@@ -31,6 +31,17 @@ import lombok.experimental.SuperBuilder;
         name = MessageConstants.FIND_TOTAL_UNREAD_MESSAGES,
         query = "SELECT message FROM Message message WHERE message.receiverId = :userId AND message.state = :state"
 )
+@NamedQuery(
+        name = MessageConstants.FIND_CHAT_MEDIAS,
+        query = """
+                SELECT message
+                FROM Message message
+                WHERE message.chat.id = :chatId
+                AND message.type = :image
+                OR message.type = :video
+                ORDER BY createdDate DESC
+                """
+)
 public class Message extends BaseAuditingEntity {
 
     @Id

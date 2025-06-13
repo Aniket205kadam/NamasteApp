@@ -126,19 +126,20 @@ function App() {
           <ChatWindow
             chatId={currentOpenChatId}
             openSearch={() => setIsSearchOpen(true)}
+            openContactInfo={() => setIsContactOpen(true)}
           />
         )}
       </div>
 
       {isContactOpen && (
         <div className="contact-info-page">
-          <ContactInfo />
+          <ContactInfo close={() => setIsContactOpen(false)} chatId={currentOpenChatId} />
         </div>
       )}
 
       {isSearchOpen && (
         <div className="contact-info-page">
-          <Search chatId={currentOpenChatId} />
+          <Search chatId={currentOpenChatId} onClose={() => setIsSearchOpen(false)} />
         </div>
       )}
     </div>

@@ -60,4 +60,15 @@ public class ChatController {
                 .status(HttpStatus.OK)
                 .body(service.getChatByTwoUser(user1Id, user2Id));
     }
+
+    @GetMapping("/c/m/{chat-id}")
+    public ResponseEntity<List<String>> getChatRecentlyMedia(
+            @PathVariable("chat-id") String chatId,
+            @RequestParam(value = "count", required = false, defaultValue = "2") Integer count,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getChatRecentlyMedia(chatId, count, connectedUser));
+    }
 }
