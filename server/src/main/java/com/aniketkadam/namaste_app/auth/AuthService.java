@@ -5,10 +5,14 @@ import com.aniketkadam.namaste_app.email.EmailVerificationRequest;
 import com.aniketkadam.namaste_app.email.MailTemplateName;
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
 import com.aniketkadam.namaste_app.security.JwtService;
+import com.aniketkadam.namaste_app.tfa.TFARequest;
+import com.aniketkadam.namaste_app.tfa.TFAType;
+import com.aniketkadam.namaste_app.tfa.TOTPService;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.VerificationCode;
 import com.aniketkadam.namaste_app.user.VerificationCodeRepository;
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -34,9 +38,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final TOTPService totpService;
 
     @Transactional
-    public String register(RegistrationRequest request) throws MessagingException {
+    public String register(RegistrationRequest request) throws MessagingException, QrGenerationException {
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -44,6 +49,20 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .about("Hey there! I am using NamasteApp")
                 .build();
+
+        if (request.isTfaEnabled()) {
+            // For two-factor authentication user use the Authenticator app
+            if(request.getType() == TFAType.AUTHENTICATOR_APP) {
+                String secrete = totpService.generateNewSecret();
+
+                user.setTOTPSecrete(secrete);
+                user.setType(TFAType.AUTHENTICATOR_APP);
+            }
+            // For two-factor authentication user use the email
+            else {
+                user.setType(TFAType.REGISTERED_EMAIL);
+            }
+        }
         User savedUser = userRepository.save(user);
         sendValidationToken(user);
         return savedUser.getId();
@@ -84,7 +103,8 @@ public class AuthService {
         return code.toString();
     }
 
-    public void emailVerification(String otp, String email) throws OperationNotPermittedException, MessagingException {
+    @Transactional
+    public RegistrationResponse emailVerification(String otp, String email, String password) throws OperationNotPermittedException, MessagingException, QrGenerationException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User is not found with email: " + email));
         VerificationCode verificationCode = verificationCodeRepository.findByUserAndCode(user.getId(), otp)
@@ -101,6 +121,21 @@ public class AuthService {
 
         verificationCode.setValidatedAt(LocalDateTime.now());
         verificationCodeRepository.save(verificationCode);
+
+        // generate jwt token
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), password)
+        );
+        String jwtToken = jwtService.generateJwtToken(claims, user);
+
+        return RegistrationResponse.builder()
+                .id(user.getId())
+                .fullName(user.getName())
+                .jwtToken(jwtToken)
+                .secreteImageUri(totpService.generateQrCodeImageUri(user.getTOTPSecrete()))
+                .build();
     }
 
     public AuthenticationResponse login(AuthenticationRequest request) throws OperationNotPermittedException {
@@ -109,22 +144,56 @@ public class AuthService {
         if (!user.isVerified()) {
             throw new OperationNotPermittedException("Access Denied! Your account is not verified. Please complete verification first!");
         }
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
-        );
-        String jwtToken = jwtService.generateJwtToken(claims, user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .fullName(user.getName())
-                .id(user.getId())
-                .build();
+
+        if (user.isTfaEnabled()) {
+            return AuthenticationResponse.builder()
+                    .fullName(user.getName())
+                    .id(user.getId())
+                    .isTfaEnabled(true)
+                    .build();
+        } else {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("email", user.getEmail());
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
+            );
+            String jwtToken = jwtService.generateJwtToken(claims, user);
+            return AuthenticationResponse.builder()
+                    .isTfaEnabled(false)
+                    .token(jwtToken)
+                    .fullName(user.getName())
+                    .id(user.getId())
+                    .build();
+        }
+
     }
 
     public void sendOtp(@NonNull String email) throws MessagingException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User with email: " + email + " not found"));
         sendValidationToken(user);
+    }
+
+    public AuthenticationResponse tfaVerification(TFARequest request) throws OperationNotPermittedException {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User with Id: " + request.getUserId() + " not found!"));
+        if (user.isTfaEnabled() && user.getType() == TFAType.AUTHENTICATOR_APP) {
+            if (!totpService.isOtpValid(user.getTOTPSecrete(), request.getCode())) {
+                throw new OperationNotPermittedException("Invalid 2FA code");
+            }
+        }
+        //todo -> implement for email
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
+        );
+        String jwtToken = jwtService.generateJwtToken(claims, user);
+        return AuthenticationResponse.builder()
+                .id(user.getId())
+                .fullName(user.getName())
+                .token(jwtToken)
+                .build();
     }
 }
