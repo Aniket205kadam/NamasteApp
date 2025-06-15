@@ -35,7 +35,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional
     public String register(RegistrationRequest request) throws MessagingException {
         User user = User.builder()

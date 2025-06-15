@@ -3,106 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Streamify - Email Verification</title>
+    <title>NamasteApp - Email Verification</title>
     <style>
-        body, p, div, a {
-          margin: 0;
-          padding: 0;
-          font-family: Arial, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
         body {
-          background-color: #f4f4f4;
-          padding: 20px;
+            background-color: #f5f7fa;
+            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: #333;
+            line-height: 1.6;
         }
+
         .email-container {
-          max-width: 600px;
-          margin: 20px auto;
-          background-color: #ffffff;
-          border: 1px solid #dddddd;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
+
         .email-header {
-          background-color: #0073e6;
-          color: #ffffff;
-          text-align: center;
-          padding: 20px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: #fff;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .email-header::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .email-header::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -30px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
         .email-header h1 {
-          font-size: 24px;
-          margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0 5px;
+            position: relative;
+            z-index: 2;
         }
+
+        .email-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
         .email-body {
-          padding: 30px 20px;
-          color: #333333;
-          line-height: 1.6;
-          font-size: 16px;
+            padding: 40px 30px;
+            color: #4a5568;
         }
-        .email-body p {
-          margin-bottom: 20px;
+
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #2d3748;
+            font-weight: 500;
         }
+
+        .message {
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .verification-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .verification-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #718096;
+            margin-bottom: 12px;
+        }
+
         .verification-code {
-          text-align: center;
-          font-size: 28px;
-          font-weight: bold;
-          background-color: #f0f0f0;
-          padding: 15px;
-          border-radius: 5px;
-          letter-spacing: 2px;
-          color: #000000;
-          margin-bottom: 20px;
+            display: inline-block;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 8px;
+            padding: 5px 15px 5px 23px;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
         }
-        /* Verify button styling */
+
+        .verification-code::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            background: white;
+            z-index: -1;
+        }
+
         .verify-button {
-          display: block;
-          width: 220px;
-          margin: 0 auto 20px auto;
-          padding: 12px 0;
-          text-align: center;
-          background-color: #28a745;
-          color: #ffffff;
-          text-decoration: none;
-          font-size: 16px;
-          font-weight: bold;
-          border-radius: 5px;
-          transition: background-color 0.3s ease;
+            display: inline-block;
+            width: 220px;
+            margin: 20px auto 0;
+            padding: 16px 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
         }
+
         .verify-button:hover {
-          background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
         }
+
+        .note {
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            font-size: 14px;
+            border-left: 4px solid #e2e8f0;
+        }
+
+        .note strong {
+            color: #2d3748;
+        }
+
         .email-footer {
-          background-color: #f9f9f9;
-          text-align: center;
-          padding: 15px;
-          font-size: 12px;
-          color: #777777;
-          border-top: 1px solid #dddddd;
+            background: #f8f9fc;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 13px;
+            color: #718096;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: #4361ee;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 10px auto;
+                border-radius: 12px;
+            }
+
+            .email-header {
+                padding: 30px 15px;
+            }
+
+            .email-body {
+                padding: 30px 20px;
+            }
+
+            .verification-code {
+                font-size: 28px;
+                letter-spacing: 6px;
+                padding: 5px 10px 5px 16px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="email-container">
     <div class="email-header">
-        <h1>Streamify - Email Verification</h1>
-    </div>
-    <div class="email-body">
-        <p>Hello,</p>
-        <p>
-            Someone tried to sign up for an Instagram account with
-            <span th:text="${email}"></span>.
-            If it's not you, please enter the following confirmation code in the app:
-        </p>
-        <div class="verification-code">
-            <span th:text="${verificationCode}"></span>
+        <div class="logo">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
         </div>
-        <p>
-            Alternatively, if you wish to verify your account directly, please click the button below:
-        </p>
-        <a class="verify-button" th:href="${verificationUrl}">Verify Your Account</a>
+        <h1>Verify Your Email</h1>
+        <p>Secure access to your NamasteApp account</p>
     </div>
+
+    <div class="email-body">
+        <p class="greeting">Hello,</p>
+
+        <p class="message">
+            We noticed an attempt to sign up for a NamasteApp account using
+            <strong th:text="${email}"></strong>. To confirm this was you,
+            please use the verification code below:
+        </p>
+
+        <div class="verification-container">
+            <div class="verification-title">Verification Code</div>
+            <div class="verification-code" th:text="${verificationCode}">123456</div>
+        </div>
+
+        <a href="#" class="verify-button">Verify Email Address</a>
+
+        <div class="note">
+            <p><strong>Not expecting this email?</strong></p>
+            <p>If you didn't request this code, you can safely ignore this message.
+                Someone might have entered your email by mistake.</p>
+        </div>
+    </div>
+
     <div class="email-footer">
-        &copy; 2025 Streamify. All Rights Reserved.
+        <p>Need help? Contact our support team at support@namasteapp.com</p>
+        <div class="footer-links">
+            <a href="#">Help Center</a> •
+            <a href="#">Privacy Policy</a> •
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 NamasteApp. All Rights Reserved.
+        </div>
     </div>
 </div>
 </body>
