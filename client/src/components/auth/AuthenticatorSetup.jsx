@@ -1,16 +1,21 @@
-import React from "react";
+import { useState } from "react";
+import "../../styles/AuthenticatorSetup.css";
+import AuthenticatorAppCodeInput from "./AuthenticatorAppCodeInput";
 
-const AuthenticatorSetup = ({ fullName, qrCodeUrl, setupKey }) => {
+const AuthenticatorSetup = ({ data, qrCodeUrl, setupKey, userId }) => {
+  const [isShowCodePage, setIsShowCodePage] = useState(false);
+
+  if (isShowCodePage) {
+    return <AuthenticatorAppCodeInput data={data} userId={userId} />
+  }
   return (
     <div className="authentication-app">
-      {/* Header */}
       <header className="authentication-app-heading">
-        <h2>{fullName} • NamasteApp</h2>
-        <h3>Instructions for setup</h3>
+        <h5>{data.firstname + " " + data.lastname} • NamasteApp</h5>
+        <h2>Instructions for setup</h2>
       </header>
 
       <ol className="authentication-app-steps">
-        {/* Step 1 */}
         <li className="authentication-app-step">
           <h4>1. Download an authentication app</h4>
           <p>
@@ -19,7 +24,6 @@ const AuthenticatorSetup = ({ fullName, qrCodeUrl, setupKey }) => {
           </p>
         </li>
 
-        {/* Step 2 */}
         <li className="authentication-app-step">
           <h4>2. Scan this QR code or enter the setup key</h4>
           <p>
@@ -40,7 +44,6 @@ const AuthenticatorSetup = ({ fullName, qrCodeUrl, setupKey }) => {
           </div>
         </li>
 
-        {/* Step 3 */}
         <li className="authentication-app-step">
           <h4>3. Enter the 6-digit code</h4>
           <p>
@@ -51,7 +54,7 @@ const AuthenticatorSetup = ({ fullName, qrCodeUrl, setupKey }) => {
       </ol>
 
       <div className="tfa-btns">
-        <button className="next-btn">Next</button>
+        <button className="next-btn" onClick={() => setIsShowCodePage(true)}>Next</button>
       </div>
     </div>
   );

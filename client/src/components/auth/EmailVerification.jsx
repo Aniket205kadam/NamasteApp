@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/EmailVerification.css";
-import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../animation/Loading";
 import authService from "../../service/AuthService";
+import TfaMethodSelection from "./TfaMethodSelection";
 
-function EmailVerification() {
-  const { email } = useParams();
+function EmailVerification({ data }) {
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes
   const [isExpired, setIsExpired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [isShowTfa, setIsShowTfa] = useState(false);
 
   const sendOtp = async () => {
     setLoading(true);
-    const otpResponse = await authService.emailVerification(email, otp);
+    const otpResponse = await authService.emailVerification(data.email, otp);
     if (!otpResponse.success) {
-      console.log(otpResponse);
       if (otpResponse.error.message.toLowerCase().includes("expired")) {
         toast.warn(
           "Your one-time password (OTP) has expired. A new OTP has been sent to your email."
@@ -45,7 +43,7 @@ function EmailVerification() {
     }
     toast.success("Successfuly verify the email!");
     setLoading(false);
-    navigate(`/success-asuwecwoew12@1slks/${email}`);
+    setIsShowTfa(true);
   };
 
   const resendOtpHandler = async () => {
@@ -54,7 +52,9 @@ function EmailVerification() {
       toast.error(otpResponse.error.message || "Failed to resend the mail!");
       return;
     }
-    toast.success("Successfully send new One-Time Password (OTP) on your register email address!");
+    toast.success(
+      "Successfully send new One-Time Password (OTP) on your register email address!"
+    );
     setTimeLeft(120);
     setOtp("");
     setIsExpired(false);
@@ -80,6 +80,10 @@ function EmailVerification() {
 
     return () => clearInterval(timer);
   }, [timeLeft]);
+
+  if (isShowTfa) {
+    return <TfaMethodSelection data={data} />;
+  }
 
   return (
     <div className="page-container">
@@ -123,7 +127,9 @@ function EmailVerification() {
         {isExpired && (
           <p className="send-otp">
             Didn't receive the code?{" "}
-            <span className="underlined" onClick={resendOtpHandler}>Resend email</span>
+            <span className="underlined" onClick={resendOtpHandler}>
+              Resend email
+            </span>
           </p>
         )}
       </form>

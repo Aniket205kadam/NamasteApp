@@ -4,6 +4,7 @@ import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
 import com.aniketkadam.namaste_app.handler.ExceptionResponse;
 import com.aniketkadam.namaste_app.security.JwtService;
 import com.aniketkadam.namaste_app.tfa.TFARequest;
+import com.aniketkadam.namaste_app.tfa.TfaEnableRequest;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -61,12 +62,11 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<RegistrationResponse> emailVerification(
             @PathVariable("email") String email,
-            @PathVariable("verification-code") String otp,
-            @RequestParam("password") String password
+            @PathVariable("verification-code") String otp
     ) throws Exception {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.emailVerification(otp, email, password));
+                .body(service.emailVerification(otp, email));
     }
 
     @PostMapping("/login")
@@ -78,10 +78,20 @@ public class AuthController {
                 .body(service.login(request));
     }
 
+    @PatchMapping("/enable/two-factor-authentication")
+    public ResponseEntity<?> enabledTfa(
+            @RequestBody @Valid TfaEnableRequest request
+    ) throws QrGenerationException, OperationNotPermittedException {
+        System.out.println();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.enabledTfa(request));
+    }
+
     @PostMapping("/two-factor-authentication")
     public ResponseEntity<AuthenticationResponse> tfa(
             @RequestBody @Valid TFARequest request
-            ) throws OperationNotPermittedException {
+    ) throws OperationNotPermittedException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.tfaVerification(request));

@@ -67,6 +67,7 @@ public class User extends BaseAuditingEntity implements UserDetails, Principal {
 
     // tfa
     private boolean isTfaEnabled;
+    @Enumerated(value = EnumType.STRING)
     private TFAType type;
     private String TOTPSecrete;
 
