@@ -14,4 +14,5 @@ public class RegistrationResponse {
     private String jwtToken;
     private String fullName;
     private String secreteImageUri;
+    private String setupCode;
 }

@@ -18,9 +18,9 @@ public class TOTPService {
         return new DefaultSecretGenerator().generate();
     }
 
-    public String generateQrCodeImageUri(String secret) throws QrGenerationException {
+    public String generateQrCodeImageUri(String secret, String name) throws QrGenerationException {
         QrData qrData = new QrData.Builder()
-                .label("NamasteApp")
+                .label(name)
                 .secret(secret)
                 .issuer("NamasteApp")
                 .algorithm(HashingAlgorithm.SHA512)

@@ -1,0 +1,137 @@
+.tfa-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #000000;
+  padding: 20px;
+}
+
+.tfa-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-top: 40px;
+}
+
+.tfa-header h2 {
+  font-weight: 400;
+  color: #00a884;
+  margin-bottom: 16px;
+}
+
+.tfa-header p {
+  color: #000000;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.tfa-options {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto 30px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.tfa-options-heading {
+  font-weight: 400;
+  color: #000000;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #000000;
+}
+
+.tfa-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 18px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 10px;
+  border: 1px solid #2a3942;
+}
+
+/* .tfa-option:hover {
+  background-color: #2a3942;
+} */
+
+.tfa-option input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0 15px 0 5px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8696a0;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
+
+.tfa-option input[type="radio"]:checked {
+  border-color: #00a884;
+  background: radial-gradient(#00a884 0%, #00a884 40%, transparent 50%);
+}
+
+.tfa-option-heading {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #000000;
+}
+
+.tfa-option p {
+  color: #000000;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin: 3px 0;
+}
+
+.tfa-btns {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.tfa-skip-btn {
+  background: transparent;
+  border: 1px solid #2a3942;
+  color: #00a884;
+  padding: 12px 30px;
+  border-radius: 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tfa-continue {
+  background-color: #00a884;
+  color: #111b21;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.tfa-continue:disabled {
+  background-color: #1c3a32;
+  color: #8696a0;
+  cursor: not-allowed;
+}
+
+.tfa-skip-btn:hover {
+  background-color: #d0ebe3;
+}
+
+.tfa-continue:not(:disabled):hover {
+  background-color: #06cf91;
+}
