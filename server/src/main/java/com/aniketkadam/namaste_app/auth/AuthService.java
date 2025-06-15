@@ -50,20 +50,6 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .about("Hey there! I am using NamasteApp")
                 .build();
-
-        /*if (request.isTfaEnabled()) {
-            // For two-factor authentication user use the Authenticator app
-            if(request.getType() == TFAType.AUTHENTICATOR_APP) {
-                String secrete = totpService.generateNewSecret();
-
-                user.setTOTPSecrete(secrete);
-                user.setType(TFAType.AUTHENTICATOR_APP);
-            }
-            // For two-factor authentication user use the email
-            else {
-                user.setType(TFAType.REGISTERED_EMAIL);
-            }
-        }*/
         User savedUser = userRepository.save(user);
         sendValidationToken(user);
         return savedUser.getId();
