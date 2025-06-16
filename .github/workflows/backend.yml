@@ -48,7 +48,7 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v6
         with:
-          context: .
-          dockerfile: Dockerfile
+          context: ./server
+          dockerfile: ./server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/namaste-app-backend:latest
