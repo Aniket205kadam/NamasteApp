@@ -9,6 +9,10 @@ jobs:
   build-deploy:
     name: Build and Deploy NamasteApp backend
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
