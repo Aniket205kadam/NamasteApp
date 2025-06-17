@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Search from "./components/search/Search";
 import Profile from "./components/profile/Profile";
 import Settings from "./components/setting/settings";
+import PasswordAndSecurity from "./components/setting/PasswordAndSecurity";
 
 function App() {
   const [isChatPreviews, setIsChatPreviews] = useState(true);
@@ -20,6 +21,7 @@ function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [isPasswordAndSecurity, setIsPasswordAndSecurity] = useState(false);
 
   const getLocation = () => {
     if (isChatPreviews) {
@@ -60,6 +62,7 @@ function App() {
             setIsCreateChatOpen(false);
             setIsStatusPreviews(false);
             setIsProfileOpen(true);
+            setIsPasswordAndSecurity(false);
           }}
           openChatPreviews={() => {
             setIsCreateChatOpen(false);
@@ -67,6 +70,7 @@ function App() {
             setIsStatusPreviews(false);
             setIsProfileOpen(false);
             setIsChatPreviews(true);
+            setIsPasswordAndSecurity(false);
           }}
           openSetting={() => {
             setIsCreateChatOpen(false);
@@ -74,6 +78,7 @@ function App() {
             setIsChatPreviews(false);
             setIsStatusPreviews(false);
             setIsSettingOpen(true);
+            setIsPasswordAndSecurity(false);
           }}
           openStatusPreviews={() => {
             setIsCreateChatOpen(false);
@@ -81,6 +86,7 @@ function App() {
             setIsProfileOpen(false);
             setIsChatPreviews(false);
             setIsStatusPreviews(true);
+            setIsPasswordAndSecurity(false);
           }}
           clickedLocation={getLocation()}
         />
@@ -93,6 +99,7 @@ function App() {
               setIsChatPreviews(false);
               setIsStatusPreviews(false);
               setIsCreateChatOpen(true);
+              setIsPasswordAndSecurity(false);
             }}
             setCurrentChat={setCurrentOpenChatId}
           />
@@ -103,6 +110,7 @@ function App() {
               setIsChatPreviews(true);
               setIsStatusPreviews(false);
               setIsCreateChatOpen(false);
+              setIsPasswordAndSecurity(false);
             }}
             setCurrentChat={setCurrentOpenChatId}
           />
@@ -112,12 +120,15 @@ function App() {
 
         {isStatusPreviews && <StatusPreviews />}
 
-        {isSettingOpen && <Settings />}
-      </div>
+        {isSettingOpen && <Settings openPasswordAndSecurity={() => {
+          setIsProfileOpen(false);
+          setIsStatusPreviews(false);
+          setIsSettingOpen(false);
+          setIsPasswordAndSecurity(true);
+        }} />}
 
-      {/* <div className="chat-previews-section">
-        <Profile />
-      </div> */}
+        {isPasswordAndSecurity && <PasswordAndSecurity />}
+      </div>
 
       <div className="chat-window-section">
         {currentOpenChatId.length === 0 ? (

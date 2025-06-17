@@ -4,7 +4,6 @@ const Email2FASetup = ({ fullName, initialEmail = "" }) => {
   const [email, setEmail] = useState(initialEmail);
 
   const handleNext = () => {
-    // Submit email for verification code sending
     console.log("Submitting email:", email);
   };
 

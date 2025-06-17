@@ -4,6 +4,7 @@ import {
   faLock,
   faMagnifyingGlass,
   faMessage,
+  faShield,
   faUser,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -14,7 +15,7 @@ import userService from "../../service/UserService";
 import "../../styles/Settings.css";
 import { logout } from "../../store/authSlice";
 
-function Settings() {
+function Settings({ openPasswordAndSecurity }) {
   const [search, setSearch] = useState("");
   const [user, setUser] = useState({});
   const connectedUser = useSelector((state) => state.authentication);
@@ -85,6 +86,12 @@ function Settings() {
             <FontAwesomeIcon icon={faUser} />
           </div>
           <span className="setting-option-text">Account</span>
+        </div>
+        <div className="setting-option" onClick={openPasswordAndSecurity}>
+          <div className="setting-option-icon">
+            <FontAwesomeIcon icon={faShield} />
+          </div>
+          <span className="setting-option-text">Password and security</span>
         </div>
         <div className="setting-option">
           <div className="setting-option-icon">

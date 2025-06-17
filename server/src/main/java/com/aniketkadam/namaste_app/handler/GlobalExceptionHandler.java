@@ -1,6 +1,7 @@
 package com.aniketkadam.namaste_app.handler;
 
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
+import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +85,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OperationNotPermittedException.class)
     public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exception) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ExceptionResponse.builder()
+                        .message(exception.getMessage())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(WrongOtpException.class)
+    public ResponseEntity<ExceptionResponse> handleException(WrongOtpException exception) {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(ExceptionResponse.builder()

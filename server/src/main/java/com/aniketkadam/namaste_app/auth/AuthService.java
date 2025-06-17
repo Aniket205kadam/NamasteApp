@@ -4,11 +4,11 @@ import com.aniketkadam.namaste_app.email.EmailService;
 import com.aniketkadam.namaste_app.email.EmailVerificationRequest;
 import com.aniketkadam.namaste_app.email.MailTemplateName;
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
+import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import com.aniketkadam.namaste_app.security.JwtService;
 import com.aniketkadam.namaste_app.tfa.TFARequest;
 import com.aniketkadam.namaste_app.tfa.TFAType;
 import com.aniketkadam.namaste_app.tfa.TOTPService;
-import com.aniketkadam.namaste_app.tfa.TfaEnableRequest;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.VerificationCode;
@@ -121,7 +121,9 @@ public class AuthService {
         if (!user.isVerified()) {
             throw new OperationNotPermittedException("Access Denied! Your account is not verified. Please complete verification first!");
         }
-
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
+        );
         if (user.isTfaEnabled()) {
             return AuthenticationResponse.builder()
                     .fullName(user.getName())
@@ -131,9 +133,6 @@ public class AuthService {
         } else {
             Map<String, Object> claims = new HashMap<>();
             claims.put("email", user.getEmail());
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
-            );
             String jwtToken = jwtService.generateJwtToken(claims, user);
             return AuthenticationResponse.builder()
                     .isTfaEnabled(false)
@@ -142,7 +141,6 @@ public class AuthService {
                     .id(user.getId())
                     .build();
         }
-
     }
 
     public void sendOtp(@NonNull String email) throws MessagingException {
@@ -151,16 +149,12 @@ public class AuthService {
         sendValidationToken(user);
     }
 
-    public AuthenticationResponse tfaVerification(TFARequest request) throws OperationNotPermittedException {
+    public AuthenticationResponse verifiedAuthenticatorCode(TFARequest request) throws WrongOtpException {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User with Id: " + request.getUserId() + " not found!"));
-        if (user.isTfaEnabled() && user.getType() == TFAType.AUTHENTICATOR_APP) {
-            if (!totpService.isOtpValid(user.getTOTPSecrete(), request.getCode())) {
-                throw new OperationNotPermittedException("Invalid 2FA code");
-            }
+        if (!totpService.isOtpValid(user.getTOTPSecrete(), request.getCode())) {
+            throw new WrongOtpException("WRONG OTP");
         }
-        //todo -> implement for email
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
         authenticationManager.authenticate(
@@ -172,30 +166,5 @@ public class AuthService {
                 .fullName(user.getName())
                 .token(jwtToken)
                 .build();
-    }
-
-    @Transactional
-    public RegistrationResponse enabledTfa(TfaEnableRequest request) throws QrGenerationException, OperationNotPermittedException {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User with email: " + request.getEmail() + " not found!"));
-        user.setTfaEnabled(true);
-        if (request.getType() == TFAType.AUTHENTICATOR_APP) {
-            user.setType(request.getType());
-            String secrete = totpService.generateNewSecret();
-            user.setTOTPSecrete(secrete);
-            String qrCode = totpService.generateQrCodeImageUri(secrete, user.getName());
-
-            return RegistrationResponse.builder()
-                    .id(user.getId())
-                    .fullName(user.getName())
-                    .secreteImageUri(qrCode)
-                    .setupCode(secrete)
-                    .build();
-        } else if (request.getType() == TFAType.REGISTERED_EMAIL) {
-            //todo -> create for the email tfa
-            return null;
-        } else {
-            throw new OperationNotPermittedException("Two factor authentication method is not recognize!");
-        }
     }
 }

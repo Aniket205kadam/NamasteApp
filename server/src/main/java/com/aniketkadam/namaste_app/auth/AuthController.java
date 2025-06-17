@@ -1,10 +1,10 @@
 package com.aniketkadam.namaste_app.auth;
 
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
+import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import com.aniketkadam.namaste_app.handler.ExceptionResponse;
 import com.aniketkadam.namaste_app.security.JwtService;
 import com.aniketkadam.namaste_app.tfa.TFARequest;
-import com.aniketkadam.namaste_app.tfa.TfaEnableRequest;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -78,23 +78,13 @@ public class AuthController {
                 .body(service.login(request));
     }
 
-    @PatchMapping("/enable/two-factor-authentication")
-    public ResponseEntity<?> enabledTfa(
-            @RequestBody @Valid TfaEnableRequest request
-    ) throws QrGenerationException, OperationNotPermittedException {
-        System.out.println();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(service.enabledTfa(request));
-    }
-
-    @PostMapping("/two-factor-authentication")
-    public ResponseEntity<AuthenticationResponse> tfa(
+    @PostMapping("/verify/tfa/authenticator")
+    public ResponseEntity<AuthenticationResponse> verifiedTfa(
             @RequestBody @Valid TFARequest request
-    ) throws OperationNotPermittedException {
+    ) throws WrongOtpException {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(service.tfaVerification(request));
+                .body(service.verifiedAuthenticatorCode(request));
     }
 
     @GetMapping("/resend/{email}/otp")

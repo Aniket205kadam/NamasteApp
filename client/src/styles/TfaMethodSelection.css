@@ -1,15 +1,12 @@
 .tfa-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   color: #000000;
   padding: 20px;
 }
 
 .tfa-header {
   text-align: center;
-  margin-bottom: 40px;
-  padding-top: 40px;
 }
 
 .tfa-header h2 {

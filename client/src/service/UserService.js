@@ -234,6 +234,84 @@ class UserService {
       };
     }
   }
+
+  async generateAuthenticatorSecrete(token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/get/authenticator/secrete`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+        response: await response.json()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
+
+  async enable2FA(request, token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/enable/two-factor-authentication/authenticator/app`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(request)
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
 }
 
 export default new UserService();
