@@ -9,7 +9,6 @@ const Email2FASetup = ({ fullName, initialEmail = "" }) => {
 
   return (
     <div className="email-2fa-setup">
-      {/* Header */}
       <header className="authentication-app-heading">
         <h2>{fullName} • NamasteApp</h2>
         <h3>Add email address</h3>
@@ -17,8 +16,6 @@ const Email2FASetup = ({ fullName, initialEmail = "" }) => {
           Enter your email address and we’ll send you a confirmation code next.
         </p>
       </header>
-
-      {/* Email Input */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -36,8 +33,6 @@ const Email2FASetup = ({ fullName, initialEmail = "" }) => {
             required
           />
         </div>
-
-        {/* Info Paragraph */}
         <p className="email-info">
           We use the email address added here to help you log in, protect our
           community, accurately count people who use our services, and assist
@@ -47,7 +42,6 @@ const Email2FASetup = ({ fullName, initialEmail = "" }) => {
           ads.
         </p>
 
-        {/* Next Button */}
         <button type="submit" className="next-btn">
           Next
         </button>

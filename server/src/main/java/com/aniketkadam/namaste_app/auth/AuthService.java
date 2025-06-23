@@ -3,16 +3,12 @@ package com.aniketkadam.namaste_app.auth;
 import com.aniketkadam.namaste_app.email.EmailService;
 import com.aniketkadam.namaste_app.email.EmailVerificationRequest;
 import com.aniketkadam.namaste_app.email.MailTemplateName;
+import com.aniketkadam.namaste_app.email.TfaAuthenticationRequest;
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
 import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import com.aniketkadam.namaste_app.security.JwtService;
-import com.aniketkadam.namaste_app.tfa.TFARequest;
-import com.aniketkadam.namaste_app.tfa.TFAType;
-import com.aniketkadam.namaste_app.tfa.TOTPService;
-import com.aniketkadam.namaste_app.user.User;
-import com.aniketkadam.namaste_app.user.UserRepository;
-import com.aniketkadam.namaste_app.user.VerificationCode;
-import com.aniketkadam.namaste_app.user.VerificationCodeRepository;
+import com.aniketkadam.namaste_app.tfa.*;
+import com.aniketkadam.namaste_app.user.*;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +35,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final TOTPService totpService;
+    private final TfaEmailTokenRepository tfaEmailTokenRepository;
 
     @Transactional
     public String register(RegistrationRequest request) throws MessagingException, QrGenerationException {
@@ -61,7 +57,7 @@ public class AuthService {
         emailService.sendEmail(EmailVerificationRequest.builder()
                         .to(user.getEmail())
                         .mailTemplate(MailTemplateName.ACTIVATE_ACCOUNT)
-                        .verificationUrl("") // todo -> remove after sometime version
+                        .verificationUrl("")
                         .verificationCode(newToken)
                         .subject("Account activation")
                         .build()
@@ -115,19 +111,37 @@ public class AuthService {
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) throws OperationNotPermittedException {
+    public AuthenticationResponse login(AuthenticationRequest request) throws OperationNotPermittedException, MessagingException {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("User is not found with email: " + request.getEmail()));
         if (!user.isVerified()) {
             throw new OperationNotPermittedException("Access Denied! Your account is not verified. Please complete verification first!");
         }
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
-        );
+        // first check the email and password is correct then show 2fa
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword()));
         if (user.isTfaEnabled()) {
+            // if user use email 2-factor authentication then its executed
+            if (user.getType() == TFAType.REGISTERED_EMAIL) {
+                // send login code on email
+                String otp = generateActivationToken(6);
+                TfaEmailToken tfaEmailToken = TfaEmailToken.builder()
+                        .otp(otp)
+                        .createdAt(LocalDateTime.now())
+                        .expiresAt(LocalDateTime.now().plusMinutes(10))
+                        .user(user)
+                        .build();
+                tfaEmailTokenRepository.save(tfaEmailToken);
+                TfaAuthenticationRequest emailRequest = TfaAuthenticationRequest.builder()
+                        .to(user.getEmail())
+                        .otp(otp)
+                        .subject("")
+                        .build();
+                emailService.send2FAOTP(emailRequest);
+            }
             return AuthenticationResponse.builder()
                     .fullName(user.getName())
                     .id(user.getId())
+                    .type(user.getType())
                     .isTfaEnabled(true)
                     .build();
         } else {
@@ -152,6 +166,29 @@ public class AuthService {
     public AuthenticationResponse verifiedAuthenticatorCode(TFARequest request) throws WrongOtpException {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User with Id: " + request.getUserId() + " not found!"));
+        // If user use registered email for 2-factor authentication then execute this block
+        if (user.getType() == TFAType.REGISTERED_EMAIL) {
+            TfaEmailToken tfaEmailToken = tfaEmailTokenRepository.findByUserAndOtp(user.getId(), request.getCode())
+                    .orElseThrow(() -> new EntityNotFoundException("2FA token with user Id : " + user.getId() + " not found"));
+            if (tfaEmailToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+                throw new WrongOtpException("The OTP you entered has expired. Please request a new OTP and try again.");
+            }
+            if (tfaEmailToken.getValidatedAt() != null) {
+                throw new WrongOtpException("A new OTP has been sent! The previous one is already validated.");
+            }
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("email", user.getEmail());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPassword())
+            );
+            String jwtToken = jwtService.generateJwtToken(claims, user);
+            return AuthenticationResponse.builder()
+                    .id(user.getId())
+                    .fullName(user.getName())
+                    .token(jwtToken)
+                    .build();
+        }
+
         if (!totpService.isOtpValid(user.getTOTPSecrete(), request.getCode())) {
             throw new WrongOtpException("WRONG OTP");
         }

@@ -151,6 +151,7 @@ public class UserService {
         emailService.send2FAOTP(request);
     }
 
+    @Transactional
     public void set2FAUsingRegisterEmail(String otp, Authentication connectedUser) throws WrongOtpException {
         User user = (User) connectedUser.getPrincipal();
         TfaEmailToken token = tfaEmailTokenRepository.findByUserAndOtp(user.getId(), otp)
@@ -162,8 +163,29 @@ public class UserService {
             throw new WrongOtpException("A new OTP has been sent! The previous one is already validated.");
         }
         user.setType(TFAType.REGISTERED_EMAIL);
+        user.setTfaEnabled(true);
         token.setValidatedAt(LocalDateTime.now());
         userRepository.save(user);
         tfaEmailTokenRepository.save(token);
+    }
+
+    public TFAResponse isEnable2fa(Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        return TFAResponse
+                .builder()
+                .isTfaEnabled(user.isTfaEnabled())
+                .type(user.getType())
+                .build();
+    }
+
+    @Transactional
+    public void turnOff2fa(Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        // turn of 2fa
+        user.setType(null);
+        user.setTfaEnabled(false);
+        user.setTOTPSecrete(null);
+        // update user
+        userRepository.save(user);
     }
 }

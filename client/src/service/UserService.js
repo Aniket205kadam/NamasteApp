@@ -264,7 +264,7 @@ class UserService {
       return {
         success: true,
         status: response.status,
-        response: await response.json()
+        response: await response.json(),
       };
     } catch (error) {
       return {
@@ -285,7 +285,160 @@ class UserService {
             "Content-type": "application/json",
             Accept: "application/json",
           },
-          body: JSON.stringify(request)
+          body: JSON.stringify(request),
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
+
+  async send2FACodeOnEmail(token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/send/2fa/register-email`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
+
+  async verified2FACodeUsingEmail(otp, token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/enable/two-factor-authentication/register-email/${otp}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
+
+  async isEnabled2FA(token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/is/enable/2fa`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      if (response.status === 403 || response.status === 401) {
+        return {
+          success: false,
+          status: 403,
+        };
+      }
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+      return {
+        success: true,
+        status: response.status,
+        response: await response.json(),
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to remove the avtar!",
+      };
+    }
+  }
+
+  async turnOff2FA(token) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/users/turn-off/2fa`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
+            Accept: "application/json",
+          },
         }
       );
       if (response.status === 403 || response.status === 401) {

@@ -2,20 +2,18 @@ import { useState } from "react";
 import "../../styles/TfaMethodSelection.css";
 import AuthenticationSetup from "./AuthenticatorSetup";
 import { useSelector } from "react-redux";
+import EmailSetup from "./EmailSetup";
 
-const TfaMethodSelection = ({ onClose }) => {
+const TfaMethodSelection = ({ onClose, setState }) => {
   const [selectedMethod, setSelectedMethod] = useState("AUTHENTICATOR_APP");
   const [isShowAuthenticatorSetup, setIsShowAuthentocatorSetup] = useState(false);
   const [isShowEmailSetup, setIsShowEmailSetup] = useState();
   const connectedUser = useSelector((state) => state.authentication);
 
   const selectTfaMethod = async () => {
-    console.log("1");
     if (selectedMethod === "AUTHENTICATOR_APP") {
-      console.log("2");
       setIsShowAuthentocatorSetup(true);
     } else if (selectedMethod === "REGISTERED_EMAIL") {
-      console.log("3");
       setIsShowEmailSetup(true);
     }
   };
@@ -24,7 +22,7 @@ const TfaMethodSelection = ({ onClose }) => {
     return <AuthenticationSetup onClose={onClose} />
   } 
   if (isShowEmailSetup) {
-
+    return <EmailSetup onClose={onClose} setState={setState} />
   }
 
   return (

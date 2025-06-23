@@ -72,7 +72,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody @Valid AuthenticationRequest request
-    ) throws OperationNotPermittedException {
+    ) throws OperationNotPermittedException, MessagingException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.login(request));

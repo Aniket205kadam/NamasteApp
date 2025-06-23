@@ -4,6 +4,7 @@ import com.aniketkadam.namaste_app.chat.ChatResponse;
 import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import com.aniketkadam.namaste_app.tfa.AuthenticatorRequest;
 import com.aniketkadam.namaste_app.tfa.AuthenticatorResponse;
+import com.aniketkadam.namaste_app.tfa.TFAResponse;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
@@ -107,12 +108,29 @@ public class UserController {
      service.generateOtpForEmail(connectedUser);
     }
 
-    @PutMapping("/enable/two-factor-authentication/register-email")
+    @PutMapping("/enable/two-factor-authentication/register-email/{otp}")
     @ResponseStatus(HttpStatus.OK)
     public void set2FAUsingRegisterEmail(
-            @RequestParam("otp") String otp,
+            @PathVariable("otp") String otp,
             Authentication connectedUser
     ) throws WrongOtpException {
         service.set2FAUsingRegisterEmail(otp, connectedUser);
+    }
+
+    @GetMapping("/is/enable/2fa")
+    public ResponseEntity<TFAResponse> isEnable2fa(
+            Authentication connectedUser
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.isEnable2fa(connectedUser));
+    }
+
+    @PatchMapping("/turn-off/2fa")
+    @ResponseStatus(HttpStatus.OK)
+    public void turnOff2fa(
+            Authentication connectedUser
+    ) {
+        service.turnOff2fa(connectedUser);
     }
 }
