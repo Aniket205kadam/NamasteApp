@@ -124,7 +124,7 @@ class AuthServiceTest {
     }*/
 
     @Test
-    public void loginTest() throws OperationNotPermittedException {
+    public void loginTest() throws OperationNotPermittedException, MessagingException {
         AuthenticationRequest request = AuthenticationRequest.builder()
                 .email("aniket@gmail.com")
                 .password("encodedPassword")
