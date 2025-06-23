@@ -2,6 +2,7 @@ package com.aniketkadam.namaste_app.user;
 
 import com.aniketkadam.namaste_app.chat.Chat;
 import com.aniketkadam.namaste_app.common.BaseAuditingEntity;
+import com.aniketkadam.namaste_app.tfa.TFAType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -63,6 +64,12 @@ public class User extends BaseAuditingEntity implements UserDetails, Principal {
     private boolean isVerified;
 
     private String sub; //Auth provider unique user ID
+
+    // tfa
+    private boolean isTfaEnabled;
+    @Enumerated(value = EnumType.STRING)
+    private TFAType type;
+    private String TOTPSecrete;
 
     @OneToMany(mappedBy = "sender")
     private List<Chat> chatsAsSender;

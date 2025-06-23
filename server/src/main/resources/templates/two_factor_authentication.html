@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your NamasteApp Security Code</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .otp-container {
+            background: #f0f4ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .otp-code {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #4f46e5;
+            margin: 15px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background: #4f46e5;
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+            background: #f9f9f9;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 20px 0;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">NamasteApp</div>
+        <h2>Your Security Verification</h2>
+    </div>
+
+    <div class="content">
+        <p>Hello,</p>
+        <p>We received a request to access your NamasteApp account. Please use the following One-Time Password (OTP) to complete your verification:</p>
+
+        <div class="otp-container">
+            <p>Your verification code is:</p>
+            <div class="otp-code" th:text="${otp}">123456</div>
+            <p>This code is valid for <span class="highlight">10 minutes</span>.</p>
+        </div>
+
+        <p class="info-text">For your security, please do not share this code with anyone. NamasteApp will never ask you for this code.</p>
+
+        <div class="divider"></div>
+
+        <p>If you didn't request this code, please ignore this email or contact our support team immediately.</p>
+
+        <p>Thank you,<br>The NamasteApp Team</p>
+    </div>
+
+    <div class="footer">
+        <p>© 2023 NamasteApp. All rights reserved.</p>
+        <p>If you have any questions, contact us at <a href="mailto:support@namasteapp.com">support@namasteapp.com</a></p>
+    </div>
+</div>
+</body>
+</html>

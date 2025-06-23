@@ -1,0 +1,152 @@
+.two-factor-option {
+  padding: 60px;
+}
+
+.two-factor-option__radio {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin-left: 20px;
+}
+
+.two-factor-option__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  border: 1px solid #e9edef;
+}
+
+.two-factor-option__container:hover {
+  background-color: #f5f6f6;
+}
+
+.two-factor-option__content {
+  flex-grow: 1;
+}
+
+.two-factor-option__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111b21;
+  margin-bottom: 4px;
+}
+
+.two-factor-option__description {
+  font-size: 14px;
+  color: #667781;
+  line-height: 1.4;
+}
+
+.two-factor-option__toggle {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  margin-left: 16px;
+  background-color: #e9edef;
+  border-radius: 13px;
+  transition: all 0.3s ease;
+}
+
+.two-factor-option__toggle:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.two-factor-option__radio:checked + .two-factor-option__container {
+  border-color: #00a884;
+  background-color: rgba(0, 168, 132, 0.1);
+}
+
+.two-factor-option__radio:checked + .two-factor-option__container .two-factor-option__toggle {
+  background-color: #00a884;
+}
+
+.two-factor-option__radio:checked + .two-factor-option__container .two-factor-option__toggle:after {
+  transform: translateX(24px);
+}
+
+.two-factor-option--email {
+  border-left: 4px solid #53bdeb;
+}
+
+.two-factor-turn-off {
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.two-factor-turn-off__content {
+  padding: 24px;
+  text-align: center;
+}
+
+.two-factor-turn-off__icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  color: #ff9f43;
+}
+
+.two-factor-turn-off__heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111b21;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.two-factor-turn-off__description {
+  font-size: 14px;
+  color: #667781;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.two-factor-turn-off__actions {
+  display: flex;
+  border-top: 1px solid #f0f2f5;
+}
+
+.two-factor-turn-off__button {
+  flex: 1;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.two-factor-turn-off__button--cancel {
+  color: #111b21;
+  border-right: 1px solid #f0f2f5;
+}
+
+.two-factor-turn-off__button--cancel:hover {
+  background-color: #f5f6f6;
+}
+
+.two-factor-turn-off__button--confirm {
+  color: #f4212e;
+  font-weight: 600;
+}
+
+.two-factor-turn-off__button--confirm:hover {
+  background-color: #fff0f1;
+}

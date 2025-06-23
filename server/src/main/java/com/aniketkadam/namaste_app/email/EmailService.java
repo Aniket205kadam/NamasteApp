@@ -47,13 +47,43 @@ public class EmailService {
         helper.setTo(request.getTo());
         helper.setSubject(request.getSubject());
         helper.setSentDate(new Date(System.currentTimeMillis()));
-        helper.setReplyTo("no-reply@streamify.com");
+        helper.setReplyTo("no-reply@NamasteApp.com");
 
-        mimeMessage.addHeader("X-Custom-Header", request.getVerificationCode() + " is your Streamify code");
+        mimeMessage.addHeader("X-Custom-Header", request.getVerificationCode() + " is your NamasteApp code");
         mimeMessage.setHeader("X-No-Reply", "true");
 
         String template = templateEngine.process(templateName, context);
         helper.setText(template, true);
+        mailSender.send(mimeMessage);
+    }
+
+    @Async
+    public void send2FAOTP(TfaAuthenticationRequest request) throws MessagingException {
+        String templateName = "two_factor_authentication";
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(
+                mimeMessage,
+                MimeMessageHelper.MULTIPART_MODE_MIXED,
+                StandardCharsets.UTF_8.name()
+        );
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("email", request.getTo());
+        properties.put("otp", request.getOtp());
+
+        Context context = new Context();
+        context.setVariables(properties);
+
+        mimeMessageHelper.setFrom("namasteapp@dev.com");
+        mimeMessageHelper.setTo(request.getTo());
+        mimeMessageHelper.setSubject("\uD83D\uDD10 Your NamasteApp Security Code: " + request.getOtp() + " | Valid for 10 minutes");
+        mimeMessageHelper.setSentDate(new Date(System.currentTimeMillis()));
+        mimeMessageHelper.setReplyTo("no-reply@namasteApp.com");
+
+        mimeMessage.addHeader("X-Custom-Header", request.getOtp() + " is your NamasteApp code");
+        mimeMessage.setHeader("X-No-Reply", "true");
+
+        String template = templateEngine.process(templateName, context);
+        mimeMessageHelper.setText(template, true);
         mailSender.send(mimeMessage);
     }
 }

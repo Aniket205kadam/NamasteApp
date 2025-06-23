@@ -1,0 +1,76 @@
+.tfa-on-message {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Helvetica Neue, Helvetica, Lucida Grande, Arial, sans-serif;
+  text-align: center;
+}
+
+.tfa-on-message-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: #008069;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.tfa-on-message-info {
+  font-size: 14px;
+  color: #54656f;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.tfa-backup-code {
+  font-size: 14px;
+  color: #54656f;
+  margin-bottom: 24px;
+}
+
+.backup-code {
+  color: #008069;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backup-code:hover {
+  text-decoration: underline;
+}
+
+.tfa-done {
+  background-color: #008069;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  max-width: 200px;
+}
+
+.tfa-done:hover {
+  background-color: #017561;
+}
+
+/* Animation for the component */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tfa-on-message {
+  animation: fadeInScale 0.3s ease-out;
+}

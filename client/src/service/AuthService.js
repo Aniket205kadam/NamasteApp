@@ -33,7 +33,7 @@ class AuthService {
       };
     }
   }
-
+  
   async emailVerification(email, otp) {
     try {
       const response = await fetch(
@@ -160,6 +160,41 @@ class AuthService {
       return {
         success: false,
         error: error.message || "Failed to signup the new user!",
+      };
+    }
+  }
+
+  async authenticatorCodeVerification(request) {
+    try {
+      const response = await fetch(
+        `${AppConfig.backendUrl}/api/v1/auth/verify/tfa/authenticator`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(request),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          error: error,
+        };
+      }
+
+      return {
+        success: true,
+        status: response.status,
+        response: await response.json(),
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to enable 2FA",
       };
     }
   }

@@ -1,0 +1,85 @@
+.email-setup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+.email-setup-container-heading {
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 400px;
+}
+
+.email-setup-container-heading h2 {
+  color: #41525d;
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+.email-setup-container-heading p {
+  color: #667781;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 10px 0;
+}
+
+.email-setup-container-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.email-setup-container-content input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #41525d;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.email-setup-container-content input:focus {
+  border-color: #00a884;
+}
+
+.email-setup-next-btn {
+  width: 100%;
+  padding: 12px 0;
+  background-color: #00a884;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.email-setup-next-btn:hover {
+  background-color: #008e72;
+}
+
+.email-setup-resend-code {
+  background: none;
+  border: none;
+  color: #00a884;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.email-setup-resend-code:hover {
+  text-decoration: underline;
+}

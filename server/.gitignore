@@ -34,3 +34,5 @@ build/
 uploads
 avtar
 .env
+thumbnail
+status

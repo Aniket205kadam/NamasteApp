@@ -316,3 +316,100 @@
     color: #1d2129;
     text-decoration: underline;
   }
+
+  .tfa-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 10%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: #3b4a54;
+}
+
+.tfa-container-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.tfa-container-heading .fa-lock {
+  background-color: #00a884;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.tfa-container-heading p {
+  margin: 0;
+  font-size: 14px;
+  color: #667781;
+  line-height: 1.4;
+}
+
+.tfa-container.content {
+  margin-bottom: 24px;
+}
+
+.tfa-container.content input {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e9edef;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.tfa-container.content input:focus {
+  border-color: #00a884;
+}
+
+.tfa-container.content button {
+  width: 100%;
+  padding: 12px;
+  background-color: #00a884;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tfa-container.content button:hover {
+  background-color: #008f74;
+}
+
+.tfa-info {
+  font-size: 13px;
+  color: #667781;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.tfa-info button {
+  background: none;
+  border: none;
+  color: #00a884;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+}
+
+.tfa-info button:hover {
+  text-decoration: underline;
+}

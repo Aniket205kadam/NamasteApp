@@ -1,14 +1,17 @@
 package com.aniketkadam.namaste_app.auth;
 
 import com.aniketkadam.namaste_app.exception.OperationNotPermittedException;
+import com.aniketkadam.namaste_app.exception.WrongOtpException;
 import com.aniketkadam.namaste_app.handler.ExceptionResponse;
 import com.aniketkadam.namaste_app.security.JwtService;
+import com.aniketkadam.namaste_app.tfa.TFARequest;
 import com.aniketkadam.namaste_app.user.User;
 import com.aniketkadam.namaste_app.user.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -49,7 +52,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> register(
             @RequestBody @Valid RegistrationRequest request
-    ) throws MessagingException {
+    ) throws MessagingException, QrGenerationException {
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(service.register(request));
@@ -57,20 +60,31 @@ public class AuthController {
 
     @PatchMapping("/verification/{email}/{verification-code}")
     @ResponseStatus(HttpStatus.OK)
-    public void emailVerification(
+    public ResponseEntity<RegistrationResponse> emailVerification(
             @PathVariable("email") String email,
             @PathVariable("verification-code") String otp
     ) throws Exception {
-        service.emailVerification(otp, email);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.emailVerification(otp, email));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody @Valid AuthenticationRequest request
-    ) throws OperationNotPermittedException {
+    ) throws OperationNotPermittedException, MessagingException {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.login(request));
+    }
+
+    @PostMapping("/verify/tfa/authenticator")
+    public ResponseEntity<AuthenticationResponse> verifiedTfa(
+            @RequestBody @Valid TFARequest request
+    ) throws WrongOtpException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.verifiedAuthenticatorCode(request));
     }
 
     @GetMapping("/resend/{email}/otp")
