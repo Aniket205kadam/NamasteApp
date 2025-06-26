@@ -1,6 +1,11 @@
 # WhatsApp Clone – Real-Time Chat App with AI Assistant
 A secure, scalable, real-time chat backend inspired by WhatsApp. Built using modern backend technologies like Java, Spring Boot, WebSocket, PostgreSQL, and FFmpeg, and enhanced with AI capabilities using Spring AI and Ollama.
 
+## 📽️ Demo Video
+Click the image below to watch a short demo of the project:
+
+[![Watch the video](https://img.youtube.com/vi/v9-y9j4kFEU/0.jpg)](https://youtu.be/v9-y9j4kFEU)
+
 ## Features
 Real-Time Messaging
 → Instant messaging between users using WebSocket with message encryption.
