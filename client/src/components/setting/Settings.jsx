@@ -74,7 +74,7 @@ function Settings({ openPasswordAndSecurity }) {
           <img src={connectedUser.avtar} alt={connectedUser.fullName} />
         </div>
         <div className="setting-user-info">
-          <span className="username">{connectedUser.fullName}</span>
+          <span className="username">{user.firstname + " " + user.lastname}</span>
           <span className="about">
             {user?.about || "Hey there! I am using WhatsApp"}
           </span>

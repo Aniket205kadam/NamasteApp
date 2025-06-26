@@ -13,6 +13,7 @@ import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AbstractMessage;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AIService {
     private static final Logger log = LoggerFactory.getLogger(AIService.class);
     private final UserRepository userRepository;

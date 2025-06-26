@@ -69,6 +69,7 @@ function ChatWindow({ chatId, openSearch, openContactInfo }) {
   const [showChatOptions, setShowChatOptions] = useState(false);
   const dispatch = useDispatch();
   const chatOptionsRef = useRef(null);
+  const [isBotThinking, setIsBotThinking] = useState(false);
 
   useClickOutside(fileOptionsRef, () => setIsFileSelectionOptionOpen(false));
   useClickOutside(emojiRef, () => setIsDisplayEmojis(false));
@@ -111,6 +112,9 @@ function ChatWindow({ chatId, openSearch, openContactInfo }) {
     if (!chat.id) {
       toast.error("Chat data not loaded yet!");
       return;
+    }
+    if (isBotChat) {
+      setIsBotThinking(true);
     }
     let chatResponse = "";
     if (reply) {
@@ -374,7 +378,7 @@ function ChatWindow({ chatId, openSearch, openContactInfo }) {
                   },
                 ]),
               ]);
-              // }
+              setIsBotThinking(false);
             } else if (
               notification.type === "SEEN" &&
               notification.receiverId === connectedUser.id
@@ -481,15 +485,25 @@ function ChatWindow({ chatId, openSearch, openContactInfo }) {
           />
           <div className="chat-window__info">
             <span className="chat-window__name">{chat.name}</span>
-            <span className="chat-window__status">
-              {isTyping ? (
-                <span style={{ color: "#04b00f" }}>Typing...</span>
-              ) : chat.recipientOnline ? (
-                <span>online</span>
-              ) : (
-                <span>offline</span>
-              )}
-            </span>
+            {isBotChat ? (
+              <span className="chat-window__status">
+                {isBotThinking ? (
+                  <span style={{ color: "#04b00f" }}>Thinking...</span>
+                ) : (
+                  <span>Online</span>
+                )}
+              </span>
+            ) : (
+              <span className="chat-window__status">
+                {isTyping ? (
+                  <span style={{ color: "#04b00f" }}>Typing...</span>
+                ) : chat.recipientOnline ? (
+                  <span>online</span>
+                ) : (
+                  <span>offline</span>
+                )}
+              </span>
+            )}
           </div>
         </div>
         <div className="chat-window__actions">

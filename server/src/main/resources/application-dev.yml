@@ -26,20 +26,37 @@ spring:
           model: gemma:2b
           temperature: 0.7
 
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: namasteapp.com
+#    password: namasteapp-password
+#    properties:
+#      smtp:
+#        trust: "*"
+#      auth: true
+#      starttls:
+#        enable: true
+#      connectiontimeout: 5000
+#      timeout: 3000
+#      writetimeout: 5000
+
   mail:
     host: ${MAIL_HOST}
-    port: 1025
+    port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
-      smtp:
-        trust: "*"
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: "*"
       auth: true
       starttls:
         enable: true
-      connectiontimeout: 5000
-      timeout: 3000
-      writetimeout: 5000
+      protocol: smtp
 
   security:
     oauth2:
