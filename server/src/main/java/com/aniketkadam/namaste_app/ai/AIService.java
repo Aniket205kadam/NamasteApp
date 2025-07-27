@@ -13,7 +13,6 @@ import com.aniketkadam.namaste_app.user.UserRepository;
 import com.aniketkadam.namaste_app.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AbstractMessage;
@@ -27,18 +26,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AIService {
     private static final Logger log = LoggerFactory.getLogger(AIService.class);
     private final UserRepository userRepository;
@@ -50,8 +43,10 @@ public class AIService {
     private final NotificationService notificationService;
     private final AESService aesService;
 
+    private static final String EVN_BOT_NAME = "AI_BOT_ID";
+
     public UserResponse findAIBot() {
-        final String sub = System.getenv("AI_BOT_ID");
+        final String sub = System.getenv(EVN_BOT_NAME);
         User user = userRepository.findBySub(sub)
                 .orElseThrow(() -> new EntityNotFoundException("AI Bot not found"));
         return mapper.toUserResponse(user);
@@ -94,7 +89,7 @@ public class AIService {
 
     @Async
     public void generateResponseFromAI(MessageRequest request, Message userSendMessage) {
-        String botSub = System.getenv("AI_BOT_ID");
+        String botSub = System.getenv(EVN_BOT_NAME);
         User bot = userRepository.findBySub(botSub)
                 .orElseThrow(() -> new EntityNotFoundException("AI Bot is not created yet."));
         User reciverUser = userRepository.findById(request.getSenderId())
@@ -186,7 +181,7 @@ public class AIService {
 
 
     public boolean sendMessageForBot(MessageRequest request) {
-        String botSub = System.getenv("AI_BOT_ID");
+        String botSub = System.getenv(EVN_BOT_NAME);
         User bot = userRepository.findBySub(botSub)
                 .orElseThrow(() -> new EntityNotFoundException("Bot is not create yet."));
         return request.getReceiverId().equals(bot.getId());

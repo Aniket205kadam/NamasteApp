@@ -133,7 +133,7 @@ public class AuthController {
 
         Map<String, Object> userData = githubUserResponse.getBody();
         User user = processGithubUser(userData);
-        Map<String, Object> claims = Map.of("email", user.getEmail());
+        Map<String, Object> claims = Map.of("email", user   .getEmail());
 
         String jwtToken = jwtService.generateJwtToken(claims, user);
 
