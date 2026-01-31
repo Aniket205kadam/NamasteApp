@@ -54,7 +54,8 @@ public class AuthService {
     private void sendValidationToken(User user) throws MessagingException {
         String newToken = generateAndSaveActivationToken(user);
         // send email
-        emailService.sendEmail(EmailVerificationRequest.builder()
+        emailService.sendEmail(
+                EmailVerificationRequest.builder()
                         .to(user.getEmail())
                         .mailTemplate(MailTemplateName.ACTIVATE_ACCOUNT)
                         .verificationUrl("")

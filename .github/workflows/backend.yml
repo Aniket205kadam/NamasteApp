@@ -26,6 +26,7 @@ jobs:
       - name: Run unit test
         run: mvn -B test --file pom.xml
 
+
       - name: Build the backend
         run: |
           mvn clean
